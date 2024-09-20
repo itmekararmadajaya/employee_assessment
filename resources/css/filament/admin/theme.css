@@ -1,0 +1,87 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+.mt-3 {
+    margin-top: 0.75rem;
+}
+
+.mt-5 {
+    margin-top: 1.25rem;
+}
+
+/* Font */
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+/* Font */
+
+/* Card */
+.card {
+    display: block;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.card-width-32 {
+  width: 32%; /* Default width */
+}
+
+/* Apply 100% width when screen size is md (768px) or larger */
+@media (max-width: 768px) {
+  .card-width-32 {
+      width: 100%;
+  }
+}
+/* Card */
+
+/* Grid */
+.grid-2 {
+    display: block;
+    gap: 12px;
+  }
+  
+  @media (min-width: 1024px) {
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+/* Grid */
+
+/* Table */
+table {
+  font-size: 14px;
+}
+
+.bordered-table {
+  width: 100%;
+  border-collapse: collapse; /* Ensures borders are shared between cells */
+}
+
+.bordered-table th,
+.bordered-table td {
+  border: 1px solid #ddd; /* Adds border to each cell */
+  padding: 8px; /* Adds padding for better readability */
+  text-align: left; /* Aligns text to the left */
+}
+
+.bordered-table th {
+  background-color: #f2f2f2; /* Adds background color to header */
+}
+
+.bordered-table tr:hover {
+  background-color: #f5f5f5; /* Adds hover effect for rows */
+}
+/* Table */
+
+/* Background Color */
+.bg-yellow-400 {
+  background-color: #facc15; /* Equivalent to Tailwind's bg-yellow-400 */
+}
+
+/* Background Color */
