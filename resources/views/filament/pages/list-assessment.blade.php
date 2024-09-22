@@ -10,8 +10,8 @@
                     <h2 class="text-xl font-semibold text-gray-800">{{ $assessment->name }}</h2>
                 </div>
                 <div class="p-4 space-y-4">
-                    <p class="text-gray-600">{{ $assessment->description }}</p>
-                    
+                    <p class="text-gray-600 text-sm">{{ $assessment->description }}</p>
+
                     <table class="text-gray-500">
                         <tbody>
                             <tr>

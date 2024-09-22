@@ -22,7 +22,7 @@ class EmployeeResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     protected static ?string $navigationGroup = 'Employees';
-    
+
     protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
@@ -32,6 +32,7 @@ class EmployeeResource extends Resource
                 Section::make()->schema([
                     Forms\Components\TextInput::make('nik')
                         ->required()
+                        ->unique()
                         ->maxLength(255),
                     Forms\Components\TextInput::make('name')
                         ->required()

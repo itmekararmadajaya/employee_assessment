@@ -131,7 +131,23 @@
         <div>
             <div class="card">
                 <div class="mb-5">
-                    <span class="title">Action</span>
+                    <span class="title">Score Detail</span>
+                </div>
+                <div>
+                    <table class="w-full">
+                        <tbody>
+                            <tr class="bg-gray-50">
+                                <td style="width: 180px;" class="px-6 py-4 text-sm font-medium text-gray-900">Criteria</td>
+                                <td>:</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$score_detail['criteria']}}</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Description</td>
+                                <td class="">:</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$score_detail['description']}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -207,6 +223,49 @@
                         </div>
                     </td>
                 </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card">
+        <div class="mb-5">
+            <span class="title">Score Detail</span>
+        </div>
+        <table class="bordered-table">
+            <thead>
+                <tr>
+                    <th style="width: 10%">
+                        <div class="text-center">
+                            Range
+                        </div>
+                    </th>
+                    <th>
+                        <div class="text-center">
+                            Criteria
+                        </div>
+                    </th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($score_description as $score)
+                    <tr>
+                        <td>
+                            <div class="text-center">
+                                {{$score->min}} - {{$score->max}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-center">
+                                {{$score->criteria}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="">
+                                {{$score->description}}
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

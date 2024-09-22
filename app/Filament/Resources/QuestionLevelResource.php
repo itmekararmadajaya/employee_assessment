@@ -43,7 +43,7 @@ class QuestionLevelResource extends Resource
                         'PJS_MANAGER' => 'PJS MANAGER',
                         'SENIOR_MANAGER' => 'SENIOR MANAGER',
                         'GM' => 'GM',
-                    ])->searchable(),
+                    ])->searchable()->required(),
                     Forms\Components\Textarea::make('description')
                         ->required(),
                 ])->columns(2)
