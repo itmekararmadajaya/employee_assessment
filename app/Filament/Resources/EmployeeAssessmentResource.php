@@ -10,8 +10,10 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
@@ -19,7 +21,7 @@ class EmployeeAssessmentResource extends Resource
 {
     protected static ?string $model = EmployeeAssessment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
     protected static ?string $navigationGroup = 'Assessment';
     
@@ -60,8 +62,6 @@ class EmployeeAssessmentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('time_open')
                     ->dateTime()
                     ->sortable(),
@@ -81,7 +81,7 @@ class EmployeeAssessmentResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Action::make('result')->color('success')->url(fn(Model $record) => route('filament.admin.pages.employee-assessment-result', ['employee-assessment' => $record->slug]))
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

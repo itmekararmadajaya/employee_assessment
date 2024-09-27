@@ -71,16 +71,16 @@
                 <div class="mt-2">
                     @if ($assessment->status == 'open')
                         <div class="flex gap-3">
-                            <a class="w-1/2" href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug])}}">
+                            <a class="w-full" href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug])}}">
                                 <x-filament::button class="w-full">
                                     Assess
                                 </x-filament::button>
                             </a>
-                            <a class="w-1/2" href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug])}}">
+                            {{-- <a class="w-1/2" href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug])}}">
                                 <x-filament::button class="w-full" color="info">
                                     Approve
                                 </x-filament::button>
-                            </a>
+                            </a> --}}
                         </div>
                     @elseif($assessment->status == 'done')
                         <x-filament::button color="success" class="w-full">

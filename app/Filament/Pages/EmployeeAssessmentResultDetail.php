@@ -2,64 +2,52 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\Employee;
 use App\Models\EmployeeAssessed;
-use App\Models\EmployeeAssessedResponse;
 use App\Models\EmployeeAssessedResponseText;
-use App\Models\EmployeeAssessment;
 use App\Models\ScoreDescription;
+use App\Policies\EmployeeAssessedResponsePolicy;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 
-class AssessmentDetail extends Page
+class EmployeeAssessmentResultDetail extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.pages.assessment-detail';
+    protected static string $view = 'filament.pages.employee-assessment-result-detail';
 
     public $user, $employee_assessed, $employee_assessed_response, $employee_assessed_response_summary, $score_description, $score_detail;
-
-    public $showModalReassess = false;
 
     public static function shouldRegisterNavigation(): bool
     {
         return false;
     }
 
-    public function mount()
-    {
+    public function mount(){
         $user = Auth::user();
-        if (!$user && !$user->hasRole('assessor')) {
+        if (!$user && !$user->hasRole('admin', 'superadmin')) {
             abort(403, 'Not Authorized');
         }
 
         $this->user = $user;
 
-        $employeeId = request('employee');
-        $assessmentSlug = request('assessment');
+        $employeeAsessedId = request('employee-assessed');
 
-        abort_if(!$employeeId || !$assessmentSlug, 403, 'Not Authorized');
+        abort_if(!$employeeAsessedId, 403, 'Not Authorized');
 
-        $employee = Employee::find(Crypt::decrypt($employeeId));
-        $assessment = EmployeeAssessment::where('slug', $assessmentSlug)->first();
+        $employeeAsessedIdDecrypt = Crypt::decrypt($employeeAsessedId);
 
-        abort_if(!$employee || !$assessment, 403, 'Employee or Assessment not found');
+        abort_if(!$employeeAsessedIdDecrypt, 403, 'Employee Assessment not found');
 
         /**
          * Generate employee assessed
          */
-        $this->employee_assessed = EmployeeAssessed::firstOrCreate([
-            'employee_assessment_id' => $assessment->id,
-            'employee_id' => $employee->id,
-        ]);
+        $this->employee_assessed = EmployeeAssessed::where('id', $employeeAsessedIdDecrypt)->first();
         
         abort_if(!$this->employee_assessed, 403, 'Employee not found');
 
         if ($this->employee_assessed->status == 'not_assessed' || $this->employee_assessed->status == 'on_progress') {
-            $this->employee_assessed->status = 'on_progress';
-            $this->employee_assessed->save();
-            return redirect()->route('employee-assessment', $this->employee_assessed->getIdEncrypted());
+            abort(403, 'Employee not assessed');
         }
 
         $get_score_detail = ScoreDescription::where('min', '<=', $this->employee_assessed->score)->where('max', '>=', $this->employee_assessed->score)->first();
@@ -79,22 +67,14 @@ class AssessmentDetail extends Page
         $this->score_description = ScoreDescription::get();
     }
 
-    public function openModalReassess(){
-        $this->showModalReassess = true;
-    }
-
-    public function closeModalReassess(){
-        $this->showModalReassess = false;
-    }
-
-    public function reassess(){
-        $this->employee_assessed->status = 'on_progress';
-        $this->employee_assessed->save();
-
-        return redirect()->route('employee-assessment', $this->employee_assessed->getIdEncrypted());
+    public function download(){
+        dd("Coming Soon");
     }
 
     public function back(){
-        return redirect()->route('filament.admin.pages.assessment', ['assessment' => $this->employee_assessed->employee_assessment->slug]);
+        return redirect()->route('filament.admin.pages.employee-assessment-result', [
+            'employee-assessment' => $this->employee_assessed->employee_assessment->slug,
+            'status' => $this->employee_assessed->status
+        ]);
     }
 }

@@ -21,6 +21,9 @@ class EmployeeAssessment extends Component
 
     public $option_selected;
 
+    public $total_question;
+    public $total_question_answered = 0;
+
     public $showModal = false;
     public $toast_error = false;
     public $toast_message;
@@ -35,8 +38,26 @@ class EmployeeAssessment extends Component
 
         $this->employee_assessed = EmployeeAssessed::where('id', Crypt::decrypt($employee_assessed))->first();
         abort_if(!$this->employee_assessed, 403, 'Employee Not Found');
-
+        $this->employee_assessed->employee_nik = $this->employee_assessed->employee->nik;
+        $this->employee_assessed->employee_name = $this->employee_assessed->employee->name;
+        $this->employee_assessed->employee_position = $this->employee_assessed->employee->position;
+        $this->employee_assessed->employee_section = $this->employee_assessed->employee->section->name;
+        $this->employee_assessed->employee_departement = $this->employee_assessed->employee->section->departement->name;
+        $this->employee_assessed->assessor_id = $this->user->employee->id;
+        $this->employee_assessed->assessor_nik = $this->user->employee->nik;
+        $this->employee_assessed->assessor_name = $this->user->employee->name;
+        $this->employee_assessed->assessor_position = $this->user->employee->position;
+        $this->employee_assessed->assessor_section = $this->user->employee->section->name;
+        $this->employee_assessed->assessor_departement = $this->user->employee->section->departement->name;
+        $this->employee_assessed->save();
+        
         $level = QuestionLevel::where('name', $this->employee_assessed->employee->position)->first();
+        abort_if(!$level, 403, 'Question Level Not Found');
+        
+        if ($level === null || $level->questions === null || $level->questions->isEmpty()) {
+            abort(403, 'Question Not Found');
+        }
+        
         $this->all_question = $level->questions->each(function ($question, $key) {
             $question->question_number = $key + 1;
             $get_response = EmployeeAssessedResponse::where('employee_assessed_id', $this->employee_assessed->id)->where('question_id', $question->id)->first();
@@ -47,6 +68,13 @@ class EmployeeAssessment extends Component
             }
             return $question;
         });
+        
+        $this->total_question = count($this->all_question);
+        foreach($this->all_question as $question){
+            if(!empty($question['selected_option'])){
+                $this->total_question_answered ++;
+            }
+        }
 
         $questionId = request('question');
         $this->question = $this->all_question->firstWhere('id', $questionId) ?? $this->all_question->first();
@@ -70,6 +98,8 @@ class EmployeeAssessment extends Component
 
         if ($previousQuestion) {
             return redirect()->route('employee-assessment', ['employee_assessed' => $this->employee_assessed->getIdEncrypted(), 'question' => $previousQuestion->id]);
+        }else{
+            return redirect()->route('employee-assessment', ['employee_assessed' => $this->employee_assessed->getIdEncrypted(), 'question' => $this->question->id]);
         }
     }
 
@@ -84,6 +114,8 @@ class EmployeeAssessment extends Component
 
         if ($nextQuestion) {
             return redirect()->route('employee-assessment', ['employee_assessed' => $this->employee_assessed->getIdEncrypted(), 'question' => $nextQuestion->id]);
+        }else {
+            return redirect()->route('employee-assessment', ['employee_assessed' => $this->employee_assessed->getIdEncrypted(), 'question' => $this->question->id]);
         }
     }
 
@@ -144,6 +176,7 @@ class EmployeeAssessment extends Component
                         'question' => $response->question->question
                     ], [
                         'option' => $response->option,
+                        'weight' => $response->question->weight,
                         'score' => $response->score,
                     ]);
                 }
@@ -160,7 +193,7 @@ class EmployeeAssessment extends Component
                 $this->employee_assessed->employee_section = $this->employee_assessed->employee->section->name;
                 $this->employee_assessed->employee_departement = $this->employee_assessed->employee->section->departement->name;
 
-                $this->employee_assessed->assessor_id = $this->user->id;
+                $this->employee_assessed->assessor_id = $this->user->employee->id;
                 $this->employee_assessed->assessor_nik = $this->user->employee->nik;
                 $this->employee_assessed->assessor_name = $this->user->employee->name;
                 $this->employee_assessed->assessor_position = $this->user->employee->position;

@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SectionResource extends Resource
@@ -37,7 +38,9 @@ class SectionResource extends Resource
                         ->maxLength(255),
                     Forms\Components\Select::make('departement_id')
                         ->relationship('departement', 'name')
-                        ->required(),
+                        ->required()
+                        ->columnSpan(2)
+                        ->getOptionLabelFromRecordUsing(fn(Model $record) => "$record->name | ".$record->division->name),
                     // Select::make('assessed')->options([
                     //     'SUPPORT' => 'SUPPORT',
                     //     'LEADER' => 'LEADER',

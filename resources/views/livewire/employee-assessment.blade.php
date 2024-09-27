@@ -91,7 +91,7 @@
                     <button wire:click="buttonNext('{{$question->id}}')" type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5">Selanjutnya</button>
                 </div>
                 <div class="text-center my-2">
-                    <span class="text-sm text-gray-500">1 dari 10 pernyataan terjawab</span>
+                    <span class="text-sm text-gray-500">{{$total_question_answered}} dari {{$total_question}} pernyataan terjawab</span>
                 </div>
                 <div class="flex flex-wrap justify-center gap-1 max-h-40 overflow-y-auto" wire:ignore>
                     @foreach ($all_question as $question)

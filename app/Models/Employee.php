@@ -18,6 +18,12 @@ class Employee extends Model
         'section_id',
     ];
 
+    public function getAssessmentStatusAttribute()
+    {
+        //Cara panggilnya dengan assessment_status
+        return $this->assessments()->exists() ? $this->assessments->status : 'not_assessed';
+    }
+
     public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'nik', 'nik');
     }
@@ -39,5 +45,12 @@ class Employee extends Model
     public function approvals()
     {
         return $this->hasMany(EmployeeAssessed::class, 'approved_by');
+    }
+
+    public function getAssessorAttribute(){
+        $assessor = Assessor::where('section_id', $this->section_id)->get();
+        if($assessor){
+            return $assessor->pluck('assessor');
+        }
     }
 }

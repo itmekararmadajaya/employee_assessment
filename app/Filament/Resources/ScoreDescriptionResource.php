@@ -18,7 +18,7 @@ class ScoreDescriptionResource extends Resource
 {
     protected static ?string $model = ScoreDescription::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar-square';
 
     protected static ?string $navigationGroup = 'Assessment';
 
@@ -52,12 +52,14 @@ class ScoreDescriptionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('min')
                     ->numeric()
+                    ->alignRight()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('max')
                     ->numeric()
+                    ->alignRight()  
                     ->sortable(),
                 Tables\Columns\TextColumn::make('criteria')
-                    ->searchable(),
+                    ->searchable()->alignCenter(),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')

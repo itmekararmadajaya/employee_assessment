@@ -9,10 +9,13 @@ use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class EmployeeResource extends Resource
@@ -32,7 +35,7 @@ class EmployeeResource extends Resource
                 Section::make()->schema([
                     Forms\Components\TextInput::make('nik')
                         ->required()
-                        ->unique()
+                        ->unique(ignoreRecord: true)
                         ->maxLength(255),
                     Forms\Components\TextInput::make('name')
                         ->required()
@@ -55,7 +58,11 @@ class EmployeeResource extends Resource
                     ]),
                     Forms\Components\Select::make('section_id')
                         ->relationship('section', 'name')
-                        ->required(),
+                        ->required()
+                        ->columnSpan(2)
+                        ->searchable()
+                        ->preload()
+                        ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->name." | ".$record->departement->name." | ".$record->departement->division->name),
                 ])->columns(3)
             ]);
     }

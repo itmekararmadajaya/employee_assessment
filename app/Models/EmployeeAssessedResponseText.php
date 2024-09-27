@@ -15,6 +15,7 @@ class EmployeeAssessedResponseText extends Model
         'aspect',
         'question',
         'option',
+        'weight',
         'score',
     ];
 

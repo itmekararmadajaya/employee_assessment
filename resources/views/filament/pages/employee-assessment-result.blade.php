@@ -1,22 +1,43 @@
 <x-filament-panels::page>
     <div class="grid-2">
-        @if ($count_must_be_approve != 0)
-            <div>
-                <div class="card" style="background-color: #DCFCE7;" x-data="{ blinking: true }" x-init="blinking = true" :class="blinking ? 'animate-pulse' : ''">
-                    <div>
-                        <span class="title">Approval Information</span>
-                    </div>
-                    <div>
-                        Ada {{$count_must_be_approve}} karyawan yang penilaiannya perlu anda approve/setujui. SIlahkan menuju ke halaman <strong><a href="{{route('filament.admin.pages.assessment-approve', ['assessment' => $assessment->slug])}}" class="text-blue-500">Approve</a></strong>
-                    </div>
-                </div>
-            </div>
-        @endif
         <div>
             <div class="card">
-                <div class="mb-3">
-                    <span class="title">Assessment Data</span>
+                <div class="mb-5">
+                    <span class="title">Assessment Information</span>
                 </div>
+                <div>
+                    <table class="w-full">
+                        <tbody>
+                            <tr class="bg-gray-50">
+                                <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Name</td>
+                                <td>:</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessment->name}}</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Description</td>
+                                <td class="">:</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessment->description}}</td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Time Open</td>
+                                <td>:</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessment->getFormattedTimeStartTest().', '.$employee_assessment->getFormattedDateStartTest()}}</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Time Close</td>
+                                <td class="">:</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessment->getFormattedTimeCloseTest().', '.$employee_assessment->getFormattedDateCloseTest()}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="mb-5">
+                <span class="title">Status Information</span>
+            </div>
+            <div>
                 <div class="mb-3 overflow-y-auto">
                     <table class="border border-gray-300">
                         <thead>
@@ -42,7 +63,7 @@
                                 </td>
                                 <td class="border border-gray-300 p-2 text-right">
                                     <div class="text-center">
-                                        <a href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug, 'status' => 'not_assessed'])}}" class="text-blue-500">lihat</a>
+                                        <a href="{{route('filament.admin.pages.employee-assessment-result', ['employee-assessment' => $employee_assessment->slug, 'status' => 'not_assessed'])}}" class="text-blue-500">lihat</a>
                                     </div>
                                 </td>
                             </tr>
@@ -60,7 +81,7 @@
                                 </td>
                                 <td class="border border-gray-300 p-2 text-right">
                                     <div class="text-center">
-                                        <a href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug, 'status' => 'on_progress'])}}" class="text-blue-500">lihat</a>
+                                        <a href="{{route('filament.admin.pages.employee-assessment-result', ['employee-assessment' => $employee_assessment->slug, 'status' => 'on_progress'])}}" class="text-blue-500">lihat</a>
                                     </div>
                                 </td>
                             </tr>
@@ -78,7 +99,7 @@
                                 </td>
                                 <td class="border border-gray-300 p-2 text-right">
                                     <div class="text-center">
-                                        <a href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug, 'status' => 'done'])}}" class="text-blue-500">lihat</a>
+                                        <a href="{{route('filament.admin.pages.employee-assessment-result', ['employee-assessment' => $employee_assessment->slug, 'status' => 'done'])}}" class="text-blue-500">lihat</a>
                                     </div>
                                 </td>
                             </tr>
@@ -96,7 +117,7 @@
                                 </td>
                                 <td class="border border-gray-300 p-2 text-right">
                                     <div class="text-center">
-                                        <a href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug, 'status' => 'approved'])}}" class="text-blue-500">lihat</a>
+                                        <a href="{{route('filament.admin.pages.employee-assessment-result', ['employee-assessment' => $employee_assessment->slug, 'status' => 'approved'])}}" class="text-blue-500">lihat</a>
                                     </div>
                                 </td>
                             </tr>
@@ -114,19 +135,19 @@
                                 </td>
                                 <td class="border border-gray-300 p-2 text-right">
                                     <div class="text-center">
-                                        <a href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug, 'status' => 'rejected'])}}" class="text-blue-500">lihat</a>
+                                        <a href="{{route('filament.admin.pages.employee-assessment-result', ['employee-assessment' => $employee_assessment->slug, 'status' => 'rejected'])}}" class="text-blue-500">lihat</a>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </div>             
             </div>
         </div>
     </div>
     <div class="card">
         <div class="mb-3">
-            <section class="title">Employee Assessment Status {{$status == '' ? 'not_assessed' : $status}}</section>
+            <span class="title"><section class="title">Employee Assessment Status {{$status == '' ? 'not_assessed' : $status}}</section></span>
         </div>
         <div>
             {{$this->table}}

@@ -4,9 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\Employee;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -35,9 +37,12 @@ class UserResource extends Resource
                     Forms\Components\TextInput::make('name')
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('nik')
-                        ->required()
-                        ->maxLength(255),
+                    Select::make('nik')
+                    ->options(
+                        Employee::get()->pluck('nik', 'nik')
+                    )->unique(ignoreRecord: true)
+                    ->required()
+                    ->label('NIK'),
                     Forms\Components\TextInput::make('email')
                         ->email()
                         ->required()

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Employee;
 use App\Models\PasswordNotHash;
 use App\Models\Role;
 use App\Models\User;
@@ -48,9 +49,11 @@ class UserCreate extends Page implements HasForms
                         TextInput::make('name')
                         ->required()
                         ->maxLength(255),
-                    TextInput::make('nik')
-                        ->required()
-                        ->maxLength(255),
+                    Select::make('nik')
+                        ->options(
+                            Employee::get()->pluck('nik', 'nik')
+                        )
+                        ->required(),
                     TextInput::make('email')
                         ->email()
                         ->required()

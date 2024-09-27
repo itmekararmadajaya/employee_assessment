@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('assessor_position')->nullable();
             $table->string('assessor_section')->nullable();
             $table->string('assessor_departement')->nullable();
-            $table->enum('status', ['done', 'on_progress'])->default('on_progress');
+            $table->enum('status', ['not_assessed', 'on_progress', 'done', 'approved', 'rejected'])->default('not_assessed');
             
             $table->unsignedBigInteger('approved_by')->nullable();
             $table->foreign('approved_by')->references('id')->on('employees')->onDelete('set null');
@@ -42,7 +42,7 @@ return new class extends Migration
             $table->string('approver_section')->nullable();
             $table->string('approver_departement')->nullable();
             
-            $table->integer('score')->nullable();
+            $table->float('score')->nullable();
             $table->timestamps();
         });
     }

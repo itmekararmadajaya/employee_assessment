@@ -38,6 +38,8 @@ class EmployeeAssessed extends Model
         'approver_position',
         'approver_section',
         'approver_departement',
+
+        'rejected_msg',
         
         'score',
     ];
