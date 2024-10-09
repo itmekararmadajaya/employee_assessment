@@ -15,9 +15,6 @@ use Illuminate\Support\Str;
 
 class UserAssessorImport implements ToModel, WithHeadingRow, WithValidation
 {
-    /**
-    * @param Collection $collection
-    */
     public function model(array $row)
     {
         $employee = Employee::where('nik', $row['nik'])->first();

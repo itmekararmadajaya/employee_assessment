@@ -14,6 +14,7 @@ class Assessor extends Model
         'section_id',
         'assessed',
         'assessor',
+        'approver'
     ];
 
     protected $casts = [

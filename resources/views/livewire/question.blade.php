@@ -31,13 +31,18 @@
                     <div>
                         <div class="inline-flex rounded-md shadow-sm" role="group">
                             <a href="{{route('filament.admin.resources.question-levels.index')}}">
-                                <button type="button" class="inline-flex gap-1 items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-100 border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700">
+                                <button type="button" class="inline-flex gap-1 items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-100 border border-gray-200 hover:bg-gray-100 hover:text-blue-700 rounded-s-lg">
                                     Dashboard
                                   </button>
                             </a>
                             <a href="{{route('question-create')}}">
+                                <button type="button" class="inline-flex gap-1 items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-100 border border-gray-200 hover:bg-gray-100 hover:text-blue-700">
+                                Create
+                                </button>
+                            </a>
+                            <a href="{{route('filament.admin.pages.question-import')}}">
                                 <button type="button" class="inline-flex gap-1 items-center px-4 py-2 text-sm font-medium text-gray-900 bg-gray-100 border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700">
-                                Create Question
+                                Import
                                 </button>
                             </a>
                         </div>

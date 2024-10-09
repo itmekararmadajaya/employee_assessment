@@ -34,7 +34,7 @@ class Assessment extends Page implements HasTable, HasForms
 
     protected static string $view = 'filament.pages.assessment';
 
-    public $user, $user_assessor_data, $assessment, $section, $employee_assessed, $assessment_data = [], $count_must_be_approve = 0;
+    public $user, $user_assessor_data, $assessment, $section, $employee_assessed, $assessment_data = [], $count_must_be_approve = 0, $user_approver_data;
 
     //Table
     public $section_id, $position;
@@ -100,7 +100,10 @@ class Assessment extends Page implements HasTable, HasForms
             'rejected' => $count_rejected
         ];
 
-        $this->count_must_be_approve = EmployeeAssessed::query()->where('employee_assessment_id', $this->assessment->id)->whereIn('assessor_id', $get_assessment_data->pluck('id')->toArray())->where(function ($query) {
+        $this->user_approver_data = Assessor::whereIn('approver', [$user->nik])->get();
+        $user_assessor_nik_for_approve = array_unique($this->user_approver_data->pluck('assessor')->toArray());
+
+        $this->count_must_be_approve = EmployeeAssessed::query()->where('employee_assessment_id', $this->assessment->id)->whereIn('assessor_nik', $user_assessor_nik_for_approve)->where(function ($query) {
             $query->where('status', 'done');
         })->count();
 

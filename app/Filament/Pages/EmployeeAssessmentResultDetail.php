@@ -6,9 +6,13 @@ use App\Models\EmployeeAssessed;
 use App\Models\EmployeeAssessedResponseText;
 use App\Models\ScoreDescription;
 use App\Policies\EmployeeAssessedResponsePolicy;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeAssessmentResultDetail extends Page
 {
@@ -68,7 +72,22 @@ class EmployeeAssessmentResultDetail extends Page
     }
 
     public function download(){
-        dd("Coming Soon");
+        try {
+            $pdf = Pdf::loadView('templates.employee_assessment_result_pdf', [
+                'employee_assessed' => $this->employee_assessed,
+                'score_detail' => $this->score_detail,
+                'employee_assessed_response' => $this->employee_assessed_response,
+                'employee_assessed_response_summary' => $this->employee_assessed_response_summary,
+                'score_description' => $this->score_description,
+            ]);
+
+            $file_name = 'Filename' . '.pdf';
+            return response()->streamDownload(fn() => print($pdf->output()), $file_name);
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            Log::error($e->getMessage());
+            return Notification::make()->warning()->title('Something was error. Please contact IT')->send();
+        }
     }
 
     public function back(){

@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AssessorResource extends Resource
@@ -34,6 +35,7 @@ class AssessorResource extends Resource
                 Section::make()->schema([
                     Forms\Components\Select::make('section_id')
                         ->relationship('section', 'name')
+                        ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->name." | ".$record->departement->name." | ".$record->departement->division->name)
                         ->required(),
                     Select::make('assessor')->options(User::role('assessor')->get()->pluck('nik', 'nik'))
                         ->label('Assessor / Penilai'),
@@ -49,7 +51,9 @@ class AssessorResource extends Resource
                             'SENIOR_MANAGER' => 'SENIOR MANAGER',
                             'GM' => 'GM',
                     ])->multiple()->label('Assessed / Yang Dinilai')->helperText('Yang dinilai dapat lebih dari 1'),
-                ])->columns(4)
+                    Select::make('approver')->options(User::role('assessor')->get()->pluck('nik', 'nik'))
+                        ->label('Approver / Pemberi Persetujuan'),
+                ])->columns(2)
             ]);
     }
 
@@ -61,9 +65,14 @@ class AssessorResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('assessor')
-                    ->searchable(),
+                    ->searchable()
+                    ->listWithLineBreaks(),
                 Tables\Columns\TextColumn::make('assessed')
-                    ->searchable()->listWithLineBreaks(),
+                    ->searchable()
+                    ->listWithLineBreaks(),
+                Tables\Columns\TextColumn::make('approver')
+                    ->searchable()
+                    ->listWithLineBreaks(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

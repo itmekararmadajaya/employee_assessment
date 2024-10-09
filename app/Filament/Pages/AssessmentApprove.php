@@ -33,7 +33,7 @@ class AssessmentApprove extends Page implements HasTable
 
     protected static string $view = 'filament.pages.assessment-approve';
     
-    public $user, $assessment, $user_assessor_data, $section_id, $position, $employee_assessed_id, $assessment_data;
+    public $user, $assessment, $user_approver_data, $user_assessor_data, $section_id, $position, $employee_assessed_id, $assessment_data;
     
     //Url Params
     public $status;
@@ -55,21 +55,16 @@ class AssessmentApprove extends Page implements HasTable
         abort_unless($this->assessment, 403, 'Assessment Not Found');
 
         /**
-         * Get user assessor data (User Ini)
+         * Get user approver data (User Ini)
          */
-        $this->user_assessor_data = Assessor::whereIn('assessor', [$user->nik])->get();
-        $this->section_id = $this->user_assessor_data->pluck('section_id')->toArray();
-        $this->position = array_unique(array_merge(...$this->user_assessor_data->pluck('assessed')->toArray()));
+        $this->user_approver_data = Assessor::whereIn('approver', [$user->nik])->get();
+        $this->user_assessor_data = array_unique($this->user_approver_data->pluck('assessor')->toArray());
         
-        /**
-         * Get user id of assessed (Untuk mendapatkan id employee yang dinilai)
-         */
-        $this->employee_assessed_id = Employee::whereIn('section_id', $this->section_id)->whereIn('position', $this->position)->get()->pluck('id')->toArray();
 
         /**
          * Get employee assessed must be approve
          */
-        $employee_must_be_approve = EmployeeAssessed::where('employee_assessment_id', $this->assessment->id)->whereIn('assessor_id', $this->employee_assessed_id)->get();
+        $employee_must_be_approve = EmployeeAssessed::where('employee_assessment_id', $this->assessment->id)->whereIn('assessor_nik', $this->user_assessor_data)->get();
         $this->assessment_data = [
             'done' => $employee_must_be_approve->where('status' ,'done')->count(),
             'approved' => $employee_must_be_approve->where('status' ,'approved')->count(),
@@ -85,13 +80,13 @@ class AssessmentApprove extends Page implements HasTable
     public function table(Table $table){
         $status = $this->status;
         if($status != null){
-            $query = EmployeeAssessed::query()->where('employee_assessment_id', $this->assessment->id)->whereIn('assessor_id', $this->employee_assessed_id)->where(function ($query) use($status) {
+            $query = EmployeeAssessed::query()->where('employee_assessment_id', $this->assessment->id)->whereIn('assessor_nik', $this->user_assessor_data)->where(function ($query) use($status) {
                 $query->where('status', '!=', 'not_assessed')
                       ->where('status', '!=', 'on_progress')
                       ->where('status', $status);
             });
         }else{
-            $query = EmployeeAssessed::query()->where('employee_assessment_id', $this->assessment->id)->whereIn('assessor_id', $this->employee_assessed_id)->where(function ($query) {
+            $query = EmployeeAssessed::query()->where('employee_assessment_id', $this->assessment->id)->whereIn('assessor_nik', $this->user_assessor_data)->where(function ($query) {
                 $query->where('status', '!=', 'not_assessed')
                       ->where('status', '!=', 'on_progress');
             });
