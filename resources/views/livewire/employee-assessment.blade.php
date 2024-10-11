@@ -48,7 +48,7 @@
                 <div class="text-center">
                     <span class="text-2xl font-bold">PENILAIAN KARYAWAN</span>
                     <br>
-                    <span>{{$employee_assessed->employee->name}} | {{$employee_assessed->employee->nik}} | {{$employee_assessed->employee->section->name}}</span>
+                    <span>{{$employee_assessed->employee->name}} | {{$employee_assessed->employee->nik}} | {{$employee_assessed->employee->position}} | {{$employee_assessed->employee->section->name}}</span>
                 </div>
             </div>
             <div class="bg-gray-50 border bordered mb-2">

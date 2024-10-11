@@ -4,6 +4,7 @@ namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Resources\EmployeeResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 
 class ListEmployees extends ListRecords
@@ -13,6 +14,8 @@ class ListEmployees extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('import_employee')->color('gray')
+            ->url(fn (): string => route('filament.admin.pages.employee-import')),
             Actions\CreateAction::make(),
         ];
     }

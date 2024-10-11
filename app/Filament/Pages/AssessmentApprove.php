@@ -7,6 +7,7 @@ use App\Models\Departement;
 use App\Models\Employee;
 use App\Models\EmployeeAssessed;
 use App\Models\EmployeeAssessment;
+use App\Models\Position;
 use App\Models\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
@@ -113,11 +114,14 @@ class AssessmentApprove extends Page implements HasTable
                     SelectFilter::make('employee_section')
                         ->options(Section::get()->pluck('name', 'name'))
                         ->preload()
+                        ->label('Section')
                         ->searchable(),
                     SelectFilter::make('employee_departement')
+                        ->label('Departement')
                         ->options(Departement::get()->pluck('name', 'name'))
                         ->preload()
-                        ->searchable()
+                        ->searchable(),
+                    SelectFilter::make('employee_position')->options(Position::get()->pluck('name', 'name'))->multiple()->label('Position')
                 ])
                 ->filtersTriggerAction(
                     fn (Action $action) => $action

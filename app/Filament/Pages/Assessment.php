@@ -7,6 +7,7 @@ use App\Models\Departement;
 use App\Models\Employee;
 use App\Models\EmployeeAssessed;
 use App\Models\EmployeeAssessment;
+use App\Models\Position;
 use App\Models\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -24,6 +25,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class Assessment extends Page implements HasTable, HasForms
 {
@@ -162,30 +164,52 @@ class Assessment extends Page implements HasTable, HasForms
         }else{
             $table_data = $table
             ->query(Employee::query()
-                ->where(function($query) use($assessment_id) {
-                    $query->whereHas('assessments', function($query) use($assessment_id) {
-                        $query->where('employee_assessment_id', $assessment_id)
-                            ->where('status', 'not_assessed');
-                    })
-                    ->orDoesntHave('assessments');
-                })
-                ->whereIn('section_id', $this->section_id)
-                ->whereIn('position', $this->position)        
-            )
-            ->recordClasses(fn (Employee $record) => match (optional($record->assessments->first())->status){
-                'not_assessed' => 'bg-white',
-                'done' => 'bg-yellow-100',
-                'rejected' => 'bg-red-100',
-                'approved' => 'bg-green-100',
-                default => 'bg-gray-50'
+            ->leftJoin('employee_assesseds', function($join) use ($assessment_id) {
+                $join->on('employees.id', '=', 'employee_assesseds.employee_id')
+                    ->where('employee_assesseds.employee_assessment_id', $assessment_id)
+                    // ->where('employee_assesseds.status', 'not_assessed')
+                    ;
             })
+            ->whereIn('section_id', $this->section_id)
+            ->whereIn('position', $this->position)
+            ->select(
+                'employees.*', 
+                DB::raw('COALESCE(employee_assesseds.employee_assessment_id, "") as employee_assessment_id'),
+                DB::raw('COALESCE(employee_assesseds.assessment_date, "") as assessment_date'),
+                DB::raw('COALESCE(employee_assesseds.employee_id, "") as employee_id'),
+                DB::raw('COALESCE(employee_assesseds.employee_nik, "") as employee_nik'),
+                DB::raw('COALESCE(employee_assesseds.employee_name, "") as employee_name'),
+                DB::raw('COALESCE(employee_assesseds.employee_position, "") as employee_position'),
+                DB::raw('COALESCE(employee_assesseds.employee_section, "") as employee_section'),
+                DB::raw('COALESCE(employee_assesseds.employee_departement, "") as employee_departement'),
+                DB::raw('COALESCE(employee_assesseds.assessor_id, "") as assessor_id'),
+                DB::raw('COALESCE(employee_assesseds.assessor_nik, "") as assessor_nik'),
+                DB::raw('COALESCE(employee_assesseds.assessor_name, "") as assessor_name'),
+                DB::raw('COALESCE(employee_assesseds.assessor_position, "") as assessor_position'),
+                DB::raw('COALESCE(employee_assesseds.assessor_section, "") as assessor_section'),
+                DB::raw('COALESCE(employee_assesseds.assessor_departement, "") as assessor_departement'),
+                DB::raw('COALESCE(employee_assesseds.status, "") as asssessed_status'),
+                DB::raw('COALESCE(employee_assesseds.approved_by, "") as approved_by'),
+                DB::raw('COALESCE(employee_assesseds.approved_at, "") as approved_at'),
+                DB::raw('COALESCE(employee_assesseds.approver_nik, "") as approver_nik'),
+                DB::raw('COALESCE(employee_assesseds.approver_name, "") as approver_name'),
+                DB::raw('COALESCE(employee_assesseds.approver_position, "") as approver_position'),
+                DB::raw('COALESCE(employee_assesseds.approver_section, "") as approver_section'),
+                DB::raw('COALESCE(employee_assesseds.approver_departement, "") as approver_departement'),
+                DB::raw('COALESCE(employee_assesseds.rejected_msg, "") as rejected_msg'),
+                DB::raw('COALESCE(employee_assesseds.score, "") as score'),
+                )
+            ->where(function($query) {
+                $query->where('employee_assesseds.status', 'not_assessed')
+                        ->orWhereNull('employee_assesseds.status');
+            })
+            )
             ->columns([
                 TextColumn::make('nik')->searchable(),
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('position')->searchable(),
                 TextColumn::make('section.name')->searchable(),
                 TextColumn::make('section.departement.name')->searchable(),
-                TextColumn::make('assessment_status')->label('status')->alignCenter(),
             ])
             ->filters([
                 SelectFilter::make('section')
@@ -197,7 +221,8 @@ class Assessment extends Page implements HasTable, HasForms
                     ->relationship('section.departement', 'name')
                     ->multiple()
                     ->searchable()
-                    ->preload()
+                    ->preload(),
+                SelectFilter::make('position')->options(Position::get()->pluck('name', 'name'))->multiple()
             ])
             ->filtersTriggerAction(
                 fn (Action $action) => $action

@@ -2,13 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\QuestionLevelResource\Pages;
-use App\Filament\Resources\QuestionLevelResource\RelationManagers;
+use App\Filament\Resources\PositionResource\Pages;
+use App\Filament\Resources\PositionResource\RelationManagers;
 use App\Models\Position;
-use App\Models\QuestionLevel;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -16,28 +14,24 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class QuestionLevelResource extends Resource
+class PositionResource extends Resource
 {
-    protected static ?string $model = QuestionLevel::class;
+    protected static ?string $model = Position::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-bars-arrow-down';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    
+    protected static ?string $navigationGroup = 'Employees';
 
-    protected static ?int $navigationSort = 1;
-
-    protected static ?string $navigationGroup = 'Questions';
-
-    protected static ?string $navigationLabel = 'Levels';
+    protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make()->schema([
-                    Select::make('name')->options(Position::get()->pluck('name', 'name'))->searchable()
-                    ->unique(ignoreRecord: true)
-                    ->required(),
-                    Forms\Components\Textarea::make('description')
-                        ->required(),
+                    Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
                 ])->columns(2)
             ]);
     }
@@ -47,8 +41,6 @@ class QuestionLevelResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('description')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -82,9 +74,9 @@ class QuestionLevelResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListQuestionLevels::route('/'),
-            'create' => Pages\CreateQuestionLevel::route('/create'),
-            'edit' => Pages\EditQuestionLevel::route('/{record}/edit'),
+            'index' => Pages\ListPositions::route('/'),
+            'create' => Pages\CreatePosition::route('/create'),
+            'edit' => Pages\EditPosition::route('/{record}/edit'),
         ];
     }
 }

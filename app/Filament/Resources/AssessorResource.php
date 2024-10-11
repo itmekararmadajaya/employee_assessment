@@ -6,6 +6,7 @@ use App\Filament\Resources\AssessorResource\Pages;
 use App\Filament\Resources\AssessorResource\RelationManagers;
 use App\Models\Assessor;
 use App\Models\Employee;
+use App\Models\Position;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -13,6 +14,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -39,18 +41,7 @@ class AssessorResource extends Resource
                         ->required(),
                     Select::make('assessor')->options(User::role('assessor')->get()->pluck('nik', 'nik'))
                         ->label('Assessor / Penilai'),
-                    Select::make('assessed')->options([
-                            'SUPPORT' => 'SUPPORT',
-                            'LEADER' => 'LEADER',
-                            'STAFF' => 'STAFF',
-                            'FOREMAN' => 'FOREMAN',
-                            'SUPERVISOR' => 'SUPERVISOR',
-                            'ASST_MANAGER' => 'ASST.MANAGER',
-                            'MANAGER' => 'MANAGER',
-                            'PJS_MANAGER' => 'PJS MANAGER',
-                            'SENIOR_MANAGER' => 'SENIOR MANAGER',
-                            'GM' => 'GM',
-                    ])->multiple()->label('Assessed / Yang Dinilai')->helperText('Yang dinilai dapat lebih dari 1'),
+                    Select::make('assessed')->options(Position::get()->pluck('name', 'name'))->multiple()->label('Assessed / Yang Dinilai')->helperText('Yang dinilai dapat lebih dari 1'),
                     Select::make('approver')->options(User::role('assessor')->get()->pluck('nik', 'nik'))
                         ->label('Approver / Pemberi Persetujuan'),
                 ])->columns(2)
@@ -62,8 +53,15 @@ class AssessorResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('section.name')
-                    ->numeric()
+                    ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('section.departement.name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('section.departement.division.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('assessor')
                     ->searchable()
                     ->listWithLineBreaks(),
@@ -83,7 +81,8 @@ class AssessorResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('section')->relationship('section', 'name'),
+                SelectFilter::make('departement')->relationship('section.departement', 'name')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

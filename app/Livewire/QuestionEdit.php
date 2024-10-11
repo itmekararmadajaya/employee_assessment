@@ -96,7 +96,7 @@ class QuestionEdit extends Component
         $this->question->delete();
         Session::put('success', 'Success delete question');
 
-        return redirect()->route('question');
+        return redirect()->route('question', ['level' => $this->question->question_level_id]);
     }
 
     public function render()

@@ -41,18 +41,6 @@ class SectionResource extends Resource
                         ->required()
                         ->columnSpan(2)
                         ->getOptionLabelFromRecordUsing(fn(Model $record) => "$record->name | ".$record->division->name),
-                    // Select::make('assessed')->options([
-                    //     'SUPPORT' => 'SUPPORT',
-                    //     'LEADER' => 'LEADER',
-                    //     'STAFF' => 'STAFF',
-                    //     'FOREMAN' => 'FOREMAN',
-                    //     'SUPERVISOR' => 'SUPERVISOR',
-                    //     'ASST_MANAGER' => 'ASST.MANAGER',
-                    //     'MANAGER' => 'MANAGER',
-                    //     'PJS_MANAGER' => 'PJS MANAGER',
-                    //     'SENIOR_MANAGER' => 'SENIOR MANAGER',
-                    //     'GM' => 'GM',
-                    // ])->multiple()->label('Assessed / Yang Dinilai'),
                 ])->columns(4)
             ]);
     }

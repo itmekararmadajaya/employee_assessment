@@ -52,7 +52,6 @@ class QuestionCreate extends Component
             Session::put('success', 'Success add new Question, let setting options');
             return redirect()->route('question-edit', $question->id);
         } catch (Exception $e) {
-            dd($e);
             $this->error_toast = true;
         }
     }

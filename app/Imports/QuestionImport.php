@@ -15,11 +15,13 @@ class QuestionImport implements ToModel, WithHeadingRow, WithValidation
     public function model(array $row)
     {
         $question_level = QuestionLevel::where('name', $row['level'])->first();
-        $question = new Question;
-        $question->question_level_id = $question_level->id;
-        $question->aspect = $row['aspect'];
-        $question->question = $row['question'];
-        $question->weight = $row['weight'];
+        $question = Question::updateOrCreate([
+            'question_level_id' => $question_level->id,
+            'aspect' => $row['aspect'],
+            'question' => $row['question'],
+        ],[
+            'weight' => $row['weight']
+        ]);
 
         if($question->save()){
             for($i=1; $i<=5; $i++){

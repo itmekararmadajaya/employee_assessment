@@ -52,6 +52,8 @@ class AssessmentDetail extends Page
         $this->employee_assessed = EmployeeAssessed::firstOrCreate([
             'employee_assessment_id' => $assessment->id,
             'employee_id' => $employee->id,
+        ], [
+            'status' => 'not_assessed'
         ]);
         
         abort_if(!$this->employee_assessed, 403, 'Employee not found');
@@ -59,6 +61,7 @@ class AssessmentDetail extends Page
         if ($this->employee_assessed->status == 'not_assessed' || $this->employee_assessed->status == 'on_progress') {
             $this->employee_assessed->status = 'on_progress';
             $this->employee_assessed->save();
+            
             return redirect()->route('employee-assessment', $this->employee_assessed->getIdEncrypted());
         }
 

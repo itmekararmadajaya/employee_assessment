@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EmployeeResource\Pages;
 use App\Filament\Resources\EmployeeResource\RelationManagers;
 use App\Models\Employee;
+use App\Models\Position;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -13,6 +15,7 @@ use Filament\Pages\Page;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -40,18 +43,7 @@ class EmployeeResource extends Resource
                     Forms\Components\TextInput::make('name')
                         ->required()
                         ->maxLength(255),
-                    Select::make('position')->options([
-                        'SUPPORT' => 'SUPPORT',
-                        'LEADER' => 'LEADER',
-                        'STAFF' => 'STAFF',
-                        'FOREMAN' => 'FOREMAN',
-                        'SUPERVISOR' => 'SUPERVISOR',
-                        'ASST_MANAGER' => 'ASST.MANAGER',
-                        'MANAGER' => 'MANAGER',
-                        'PJS_MANAGER' => 'PJS MANAGER',
-                        'SENIOR_MANAGER' => 'SENIOR MANAGER',
-                        'GM' => 'GM',
-                    ])->searchable(),
+                    Select::make('position')->options(Position::get()->pluck('name', 'name'))->searchable(),
                     Select::make('status')->options([
                         'KONTRAK' => 'KONTRAK',
                         'TETAP' => 'TETAP',
@@ -77,9 +69,18 @@ class EmployeeResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('position')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('status')
+                ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('section.name')
-                    ->numeric()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('section.departement.name')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('section.departement.division.name')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -91,7 +92,9 @@ class EmployeeResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('section')->relationship('section', 'name'),
+                SelectFilter::make('departement')->relationship('section.departement', 'name'),
+                SelectFilter::make('position')->options(Position::get()->pluck('name', 'name'))->multiple()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

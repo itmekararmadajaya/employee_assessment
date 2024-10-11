@@ -117,7 +117,7 @@
                                 <td>:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->assessment_date}}</td>
                             </tr>
-                            <tr class="bg-white">
+                            <tr class="bg-gray-50">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900">Status</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">
