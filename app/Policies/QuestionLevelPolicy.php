@@ -29,7 +29,8 @@ class QuestionLevelPolicy
      */
     public function create(User $user): bool
     {
-        return $user->checkPermissionTo('create QuestionLevel');
+        // return $user->checkPermissionTo('create QuestionLevel');
+        return false;
     }
 
     /**
@@ -37,7 +38,8 @@ class QuestionLevelPolicy
      */
     public function update(User $user, QuestionLevel $questionlevel): bool
     {
-        return $user->checkPermissionTo('update QuestionLevel');
+        // return $user->checkPermissionTo('update QuestionLevel');
+        return false;
     }
 
     /**

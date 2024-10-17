@@ -42,6 +42,8 @@ class EmployeeAssessed extends Model
         'rejected_msg',
         
         'score',
+        'criteria',
+        'description'
     ];
 
     public function getIdEncrypted(){
@@ -69,6 +71,10 @@ class EmployeeAssessed extends Model
 
     public function employee_assessed_responses(): HasMany {
         return $this->hasMany(EmployeeAssessedResponse::class);
+    }
+
+    public function employee_assessed_responses_text(): HasMany {
+        return $this->hasMany(EmployeeAssessedResponseText::class);
     }
 
 }

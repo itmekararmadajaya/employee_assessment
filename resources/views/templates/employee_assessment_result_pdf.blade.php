@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: 'Arial, sans-serif';
-            font-size: 12px;
+            font-size: 11px;
         }
         .bordered-table {
         width: 100%;
@@ -35,7 +35,9 @@
         <table class="bordered-table">
             <tr>
                 <td colspan="2" rowspan="2">
-                    <div>LOGO</div>
+                    <div style="text-align: center; width: 100%; vertical-align: middle;">
+                        <img src="{{public_path("assets/logo/logona2.png")}}" alt="Logo" height="20px">
+                    </div>
                 </td>
                 <td colspan="4" rowspan="2">
                     <div style="text-align: center">
@@ -49,7 +51,7 @@
                 </td>
                 <td style="width: 20%;">
                     <div>
-                        Nomor
+                        
                     </div>
                 </td>
             </tr>
@@ -61,7 +63,7 @@
                 </td>
                 <td>
                     <div>
-                        Januari 2025
+                        
                     </div>
                 </td>
             </tr>
@@ -72,7 +74,7 @@
                     </div>
                 </td>
                 <td colspan="5">
-
+                    {{$employee_assessed->employee_departement}}
                 </td>
                 <td>
                     <div>
@@ -92,7 +94,9 @@
                     </div>
                 </td>
                 <td colspan="5">
-
+                    <div>
+                        {{$employee_assessed->employee_name}}
+                    </div>
                 </td>
                 <td>
                     <div>
@@ -101,7 +105,7 @@
                 </td>
                 <td>
                     <div>
-                        F201
+                        {{$employee_assessed->employee_nik}}
                     </div>
                 </td>
             </tr>
@@ -112,7 +116,9 @@
                     </div>
                 </td>
                 <td colspan="5">
-
+                    <div>
+                        {{$employee_assessed->employee_position}}
+                    </div>
                 </td>
                 <td>
                     <div>
@@ -121,7 +127,7 @@
                 </td>
                 <td>
                     <div>
-                        PA 123
+                        {{$employee_assessed->employee_assessment->name}}
                     </div>
                 </td>
             </tr>

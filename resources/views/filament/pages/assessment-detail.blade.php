@@ -161,12 +161,12 @@
                             <tr class="bg-white">
                                 <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Criteria</td>
                                 <td>:</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{$score_detail['criteria']}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed['criteria']}}</td>
                             </tr>
                             <tr class="bg-gray-50">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900">Description</td>
                                 <td class="">:</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{$score_detail['description']}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed['description']}}</td>
                             </tr>
                         </tbody>
                     </table>

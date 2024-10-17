@@ -1,6 +1,5 @@
 <x-filament-panels::page>
     <div class="grid-2">
-        @if ($count_must_be_approve != 0)
             <div>
                 <div class="card" style="background-color: #DCFCE7;" x-data="{ blinking: true }" x-init="blinking = true" :class="blinking ? 'animate-pulse' : ''">
                     <div>
@@ -11,7 +10,6 @@
                     </div>
                 </div>
             </div>
-        @endif
         <div>
             <div class="card">
                 <div class="mb-3">

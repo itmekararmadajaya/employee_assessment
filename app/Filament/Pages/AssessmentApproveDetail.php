@@ -26,9 +26,9 @@ class AssessmentApproveDetail extends Page implements HasForms
 
     protected static string $view = 'filament.pages.assessment-approve-detail';
 
-    public $user, $employee_assessed, $employee_assessed_response, $employee_assessed_response_summary, $score_description, $score_detail;
+    public $user, $employee_assessed, $employee_assessed_response, $employee_assessed_response_summary, $score_description;
 
-    public $showModalApprove = false, $approve_slug, $modalTitle, $modalBody;
+    public $showModalApprove = false, $approve_slug, $modalTitle, $modalBody, $showModalReassess = false;
 
     //Form Reject
     public $rejected_msg;
@@ -64,13 +64,6 @@ class AssessmentApproveDetail extends Page implements HasForms
         if ($this->employee_assessed->status == 'not_assessed' || $this->employee_assessed->status == 'on_progress') {
             abort(403, 'Employee not assessed');
         }
-
-        $get_score_detail = ScoreDescription::where('min', '<=', $this->employee_assessed->score)->where('max', '>=', $this->employee_assessed->score)->first();
-        $this->score_detail = [
-            'criteria' => $get_score_detail ? $get_score_detail->criteria : '',
-            'description' =>
-            $get_score_detail ? $get_score_detail->description : '',
-        ];
 
         $this->employee_assessed_response = EmployeeAssessedResponseText::where('employee_assessed_id', $this->employee_assessed->id)->get();
         $this->employee_assessed_response_summary = [
@@ -138,6 +131,21 @@ class AssessmentApproveDetail extends Page implements HasForms
         return redirect()->route('filament.admin.pages.assessment-approve-detail', [
             'employee-assessed'=> $this->employee_assessed->getIdEncrypted()
         ]);
+    }
+
+    public function openModalReassess(){
+        $this->showModalReassess = true;
+    }
+
+    public function closeModalReassess(){
+        $this->showModalReassess = false;
+    }
+
+    public function reassess(){
+        $this->employee_assessed->status = 'on_progress';
+        $this->employee_assessed->save();
+
+        return redirect()->route('employee-assessment', $this->employee_assessed->getIdEncrypted());
     }
 
     public function back(){

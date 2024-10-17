@@ -2,10 +2,12 @@
 
 namespace App\Livewire;
 
+use App\Models\Assessor;
 use App\Models\EmployeeAssessed;
 use App\Models\EmployeeAssessedResponse;
 use App\Models\EmployeeAssessedResponseText;
 use App\Models\QuestionLevel;
+use App\Models\ScoreDescription;
 use Carbon\Carbon;
 use Illuminate\Log\Logger;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +17,7 @@ use Livewire\Component;
 
 class EmployeeAssessment extends Component
 {
-    public $user, $employee_assessed;
+    public $user, $employee_assessed, $assessor_data;
 
     public $all_question, $question;
 
@@ -38,17 +40,24 @@ class EmployeeAssessment extends Component
 
         $this->employee_assessed = EmployeeAssessed::where('id', Crypt::decrypt($employee_assessed))->first();
         abort_if(!$this->employee_assessed, 403, 'Employee Not Found');
+        /**
+         * Cek apakah assessor is approver
+         */
+        $this->assessor_data = Assessor::where('section_id', $this->employee_assessed->employee->section->id)->whereIn('assessor', [$this->employee_assessed->assessor_nik])->first();
+        
         $this->employee_assessed->employee_nik = $this->employee_assessed->employee->nik;
         $this->employee_assessed->employee_name = $this->employee_assessed->employee->name;
         $this->employee_assessed->employee_position = $this->employee_assessed->employee->position;
         $this->employee_assessed->employee_section = $this->employee_assessed->employee->section->name;
         $this->employee_assessed->employee_departement = $this->employee_assessed->employee->section->departement->name;
-        $this->employee_assessed->assessor_id = $this->user->employee->id;
-        $this->employee_assessed->assessor_nik = $this->user->employee->nik;
-        $this->employee_assessed->assessor_name = $this->user->employee->name;
-        $this->employee_assessed->assessor_position = $this->user->employee->position;
-        $this->employee_assessed->assessor_section = $this->user->employee->section->name;
-        $this->employee_assessed->assessor_departement = $this->user->employee->section->departement->name;
+        if($this->assessor_data->approver != $this->user->employee->nik){
+            $this->employee_assessed->assessor_id = $this->user->employee->id;
+            $this->employee_assessed->assessor_nik = $this->user->employee->nik;
+            $this->employee_assessed->assessor_name = $this->user->employee->name;
+            $this->employee_assessed->assessor_position = $this->user->employee->position;
+            $this->employee_assessed->assessor_section = $this->user->employee->section->name;
+            $this->employee_assessed->assessor_departement = $this->user->employee->section->departement->name;
+        }
         $this->employee_assessed->save();
         
         $level = QuestionLevel::where('name', $this->employee_assessed->employee->position)->first();
@@ -193,16 +202,40 @@ class EmployeeAssessment extends Component
                 $this->employee_assessed->employee_section = $this->employee_assessed->employee->section->name;
                 $this->employee_assessed->employee_departement = $this->employee_assessed->employee->section->departement->name;
 
-                $this->employee_assessed->assessor_id = $this->user->employee->id;
-                $this->employee_assessed->assessor_nik = $this->user->employee->nik;
-                $this->employee_assessed->assessor_name = $this->user->employee->name;
-                $this->employee_assessed->assessor_position = $this->user->employee->position;
-                $this->employee_assessed->assessor_section = $this->user->employee->section->name;
-                $this->employee_assessed->assessor_departement = $this->user->employee->section->departement->name;
-                $this->employee_assessed->status = 'done';
+                if($this->assessor_data->approver != $this->user->employee->nik){
+                    $this->employee_assessed->assessor_id = $this->user->employee->id;
+                    $this->employee_assessed->assessor_nik = $this->user->employee->nik;
+                    $this->employee_assessed->assessor_name = $this->user->employee->name;
+                    $this->employee_assessed->assessor_position = $this->user->employee->position;
+                    $this->employee_assessed->assessor_section = $this->user->employee->section->name;
+                    $this->employee_assessed->assessor_departement = $this->user->employee->section->departement->name;
+                    $this->employee_assessed->status = 'done';
+                }else{
+                    $this->employee_assessed->approved_by = $this->user->employee->id;
+                    $this->employee_assessed->approved_at = Carbon::now()->format('Y-m-d H:i:s');
+                    $this->employee_assessed->approver_nik = $this->user->employee->nik;
+                    $this->employee_assessed->approver_name = $this->user->employee->name;
+                    $this->employee_assessed->approver_position = $this->user->employee->position;
+                    $this->employee_assessed->approver_section = $this->user->employee->section->name;
+                    $this->employee_assessed->approver_departement = $this->user->employee->section->departement->name;
+                    $this->employee_assessed->status = 'approved';
+                }
+                $get_score_detail = ScoreDescription::where('min', '<=', $this->employee_assessed->score)->where('max', '>=', $this->employee_assessed->score)->first();
+                if($get_score_detail){
+                    $this->employee_assessed->criteria = $get_score_detail->criteria;
+                    $this->employee_assessed->description = $get_score_detail->description;
+                }
                 $this->employee_assessed->save();
 
-                return redirect()->route('filament.admin.pages.assessment-detail', ['assessment' => $this->employee_assessed->employee_assessment->slug, 'employee' => Crypt::encrypt($this->employee_assessed->employee_id)]);
+                if($this->assessor_data->approver != $this->user->employee->nik){
+                    return redirect()->route('filament.admin.pages.assessment-detail', [
+                        'assessment' => $this->employee_assessed->employee_assessment->slug, 
+                        'employee' => Crypt::encrypt($this->employee_assessed->employee_id)]);
+                }else{
+                    return redirect()->route('filament.admin.pages.assessment-approve-detail', [
+                        'employee-assessed' => Crypt::encrypt($this->employee_assessed->id)
+                    ]);
+                }
             } catch (\Exception $e) {
                 Log::error('Error calculating score: ' . $e->getMessage());
 

@@ -118,6 +118,7 @@ class Assessment extends Page implements HasTable, HasForms
     public function table(Table $table){
         $assessment_id = $this->assessment->id;
         $status = $this->status;
+        
         if($status != null && $status != 'not_assessed'){
             $table_data = $table->query(EmployeeAssessed::query()->where('employee_assessment_id', $this->assessment->id)->where('assessor_id', $this->user->employee->id)->where('status', $status))
             ->recordClasses(fn (EmployeeAssessed $record) => match ($record->status){
@@ -230,7 +231,7 @@ class Assessment extends Page implements HasTable, HasForms
                     ->label('Filter'),
             )
             ->actions([
-                Action::make('detail')
+                Action::make('nilai')
                 ->url(fn (Employee $record): string => route('filament.admin.pages.assessment-detail', ['assessment' => $this->assessment->slug, 'employee' => Crypt::encrypt($record->id)]))
             ], position: ActionsPosition::BeforeCells)
             ->bulkActions([

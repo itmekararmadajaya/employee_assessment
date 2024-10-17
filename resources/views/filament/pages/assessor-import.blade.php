@@ -17,54 +17,76 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>nik</td>
+                    <td>section</td>
                     <td><strong>Wajib</strong></td>
-                    <td>NIK harus sudah ada didalam master data employee</td>
-                </tr>
-                <tr>
-                    <td>email</td>
-                    <td><strong>Wajib</strong></td>
-                    <td>Wajib berformat email. Contoh : fajaraji.prayoga@gmail.com, fajar.aji.prayoga@newarmada.co.id</td>
-                </tr>
-                <tr>
-                    <td>password</td>
-                    <td><strong>Tidak Wajib</strong></td>
-                    <td>Password minimal 6 digit. Jika di kosongkan maka password akan tergenerate otomatis</td>
+                    <td>Harus diisi dengan salah satu data dimaster data <strong>Section</strong></td>
                 </tr>              
+                <tr>
+                    <td>departement</td>
+                    <td><strong>Wajib</strong></td>
+                    <td>Harus diisi dengan salah satu data dimaster data <strong>Departement</strong></td>
+                </tr>             
+                <tr>
+                    <td>division</td>
+                    <td><strong>Wajib</strong></td>
+                    <td>Harus diisi dengan salah satu data dimaster data <strong>Division</strong></td>
+                </tr>             
+                <tr>
+                    <td>assessor</td>
+                    <td><strong>Wajib</strong></td>
+                    <td>Harus diisi dengan salah satu NIK dimaster data <strong>Employee</strong></td>
+                </tr>
+                <tr>
+                    <td>assessed</td>
+                    <td><strong>Wajib</strong></td>
+                    <td>Diisi dengan {{$positions}}. <strong>Jika lebih dari satu, silahkan pisahkan dengan tanda koma ( , ). Contoh: STAFF,LEADER</strong></td>
+                </tr>
+                <tr>
+                    <td>approver</td>
+                    <td><strong>Wajib</strong></td>
+                    <td>Harus diisi dengan salah satu NIK dimaster data <strong>Employee</strong></td>
+                </tr>
             </tbody>
         </table>
 
         <div class="mt-3">
             <span>Contoh : </span>
-            <table class="bordered-table" style="width: 500px;">
+            <table class="bordered-table" style="">
                 <thead>
                     <tr>
-                        <th>nik</th>
-                        <th>email</th>
-                        <th>password</th>
+                        <th>section</th>
+                        <th>departement</th>
+                        <th>division</th>
+                        <th>assessor</th>
+                        <th>assessed</th>
+                        <th>approver</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>F201</td>  
-                        <td>fajaraji.prayoga@gmail.com</td>  
-                        <td>fa7461</td>
-                    </tr>    
+                        <td>ADMIN BOX</td>  
+                        <td>PRODUCTION BOX & HEAVY DUTY</td>  
+                        <td>CAROSERIES PRODUCTION</td>
+                        <td>Y206</td>
+                        <td>STAFF</td>
+                        <td>W183</td>
+                    </tr>
                     <tr>
-                        <td>K012</td>    
-                        <td>kurnia@gmail.com</td>
-                        <td></td>
-                    </tr>    
+                        <td>PUTTY BOX</td>  
+                        <td>PRODUCTION BOX & HEAVY DUTY</td>  
+                        <td>CAROSERIES PRODUCTION</td>
+                        <td>Y206</td>
+                        <td>SUPPORT,LEADER</td>
+                        <td>W183</td>
+                    </tr>
                     <tr>
-                        <td>I112</td>   
-                        <td>intan@gmail.com</td>
-                        <td>int645</td>
-                    </tr>    
-                    <tr>
-                        <td>H089</td>   
-                        <td>hasan@gmail.com</td> 
-                        <td></td>
-                    </tr>    
+                        <td>BODY BUS</td>  
+                        <td>PRODUCTION BUS</td>  
+                        <td>CAROSERIES PRODUCTION</td>
+                        <td>W138</td>
+                        <td>SUPERVISOR</td>
+                        <td>W183</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -115,6 +137,36 @@
                     <strong>Silahkan perbaiki data tersebut, kemudian upload ulang.</strong>
                 </div>
             </div>
+            @endif
+            @if ($error_imports_relation != "" && $error_imports == "" && $success_imports == "")
+                <div class="card">
+                    <span class="title">Report Error</span>
+                    <table class="bordered-table">
+                        <thead>
+                            <th>Row</th>
+                            <th>Error</th>
+                        </thead>
+                        <tbody>
+                            @foreach ($error_imports_relation as $error_relation)
+                                <tr>
+                                    <td>{{$error_relation['row']}}</td>
+                                    <td>
+                                        <div>
+                                            @foreach ($error_relation['errors'] as $error)
+                                                <div>
+                                                    {{$error}}
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <div>
+                        <strong>Silahkan perbaiki data tersebut, kemudian upload ulang.</strong>
+                    </div>
+                </div>
             @endif
         </div>
     </div>

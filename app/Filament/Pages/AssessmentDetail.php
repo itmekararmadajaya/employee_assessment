@@ -18,7 +18,7 @@ class AssessmentDetail extends Page
 
     protected static string $view = 'filament.pages.assessment-detail';
 
-    public $user, $employee_assessed, $employee_assessed_response, $employee_assessed_response_summary, $score_description, $score_detail;
+    public $user, $employee_assessed, $employee_assessed_response, $employee_assessed_response_summary, $score_description;
 
     public $showModalReassess = false;
 
@@ -64,13 +64,6 @@ class AssessmentDetail extends Page
             
             return redirect()->route('employee-assessment', $this->employee_assessed->getIdEncrypted());
         }
-
-        $get_score_detail = ScoreDescription::where('min', '<=', $this->employee_assessed->score)->where('max', '>=', $this->employee_assessed->score)->first();
-        $this->score_detail = [
-            'criteria' => $get_score_detail ? $get_score_detail->criteria : '',
-            'description' =>
-            $get_score_detail ? $get_score_detail->description : '',
-        ];
 
         $this->employee_assessed_response = EmployeeAssessedResponseText::where('employee_assessed_id', $this->employee_assessed->id)->get();
         $this->employee_assessed_response_summary = [

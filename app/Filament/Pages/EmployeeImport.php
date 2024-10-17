@@ -18,7 +18,7 @@ class EmployeeImport extends Page
 
     public $file, $positions;
 
-    public $error_imports, $success_imports;
+    public $error_imports, $success_imports, $error_imports_relation;
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -64,12 +64,15 @@ class EmployeeImport extends Page
 
             // Access failed rows
             $failedRows = $importer->failedRows;
-            dd($successfulRows, $failedRows);
-
-            Notification::make()->success()->title('Import Success')->send();
+            if(empty($failedRows)){
+                $this->success_imports = 'Success Create All Assessor';
+                Notification::make()->success()->title('Import Success')->send();
+            }else{
+                $this->error_imports_relation = $failedRows;
+                Notification::make()->danger()->title('Import Failed')->send();
+            }
 
             $this->file = "";
-            $this->success_imports = 'Success Create All Question';
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
 

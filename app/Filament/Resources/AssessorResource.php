@@ -39,11 +39,26 @@ class AssessorResource extends Resource
                         ->relationship('section', 'name')
                         ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->name." | ".$record->departement->name." | ".$record->departement->division->name)
                         ->required(),
-                    Select::make('assessor')->options(User::role('assessor')->get()->pluck('nik', 'nik'))
-                        ->label('Assessor / Penilai'),
-                    Select::make('assessed')->options(Position::get()->pluck('name', 'name'))->multiple()->label('Assessed / Yang Dinilai')->helperText('Yang dinilai dapat lebih dari 1'),
-                    Select::make('approver')->options(User::role('assessor')->get()->pluck('nik', 'nik'))
-                        ->label('Approver / Pemberi Persetujuan'),
+                    Select::make('assessor')
+                        ->options(User::role('assessor')->get()->pluck('nik', 'nik'))
+                        ->label('Assessor / Penilai')
+                        ->required(),
+                    Select::make('assessed')
+                        ->options(Position::get()->pluck('name', 'name'))
+                        ->multiple()
+                        ->label('Assessed / Yang Dinilai')
+                        ->helperText('Yang dinilai dapat lebih dari 1')
+                        ->required()
+                        ->beforeStateDehydrated(function ($state, $set) {
+                            if (is_array($state)) {
+                                sort($state); // Urutkan array
+                                $set('assessed', $state); // Set ulang state yang sudah diurutkan
+                            }
+                        }),
+                    Select::make('approver')
+                        ->options(User::role('assessor')->get()->pluck('nik', 'nik'))
+                        ->label('Approver / Pemberi Persetujuan')
+                        ->required(),
                 ])->columns(2)
             ]);
     }

@@ -153,6 +153,36 @@
                 </div>
             </div>
             @endif
+            @if ($error_imports_relation != "" && $error_imports == "" && $success_imports == "")
+            <div class="card">
+                <span class="title">Report Error</span>
+                <table class="bordered-table">
+                    <thead>
+                        <th>Row</th>
+                        <th>Error</th>
+                    </thead>
+                    <tbody>
+                        @foreach ($error_imports_relation as $error_relation)
+                            <tr>
+                                <td>{{$error_relation['row']}}</td>
+                                <td>
+                                    <div>
+                                        @foreach ($error_relation['errors'] as $error)
+                                            <div>
+                                                {{$error}}
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                <div>
+                    <strong>Silahkan perbaiki data tersebut, kemudian upload ulang.</strong>
+                </div>
+            </div>
+        @endif
         </div>
     </div>
     <div class="">

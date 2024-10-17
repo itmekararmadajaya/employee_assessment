@@ -13,6 +13,7 @@ use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class EmployeeAssessmentResultDetail extends Page
 {
@@ -20,7 +21,7 @@ class EmployeeAssessmentResultDetail extends Page
 
     protected static string $view = 'filament.pages.employee-assessment-result-detail';
 
-    public $user, $employee_assessed, $employee_assessed_response, $employee_assessed_response_summary, $score_description, $score_detail;
+    public $user, $employee_assessed, $employee_assessed_response, $employee_assessed_response_summary, $score_description;
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -54,13 +55,6 @@ class EmployeeAssessmentResultDetail extends Page
             abort(403, 'Employee not assessed');
         }
 
-        $get_score_detail = ScoreDescription::where('min', '<=', $this->employee_assessed->score)->where('max', '>=', $this->employee_assessed->score)->first();
-        $this->score_detail = [
-            'criteria' => $get_score_detail ? $get_score_detail->criteria : '',
-            'description' =>
-            $get_score_detail ? $get_score_detail->description : '',
-        ];
-
         $this->employee_assessed_response = EmployeeAssessedResponseText::where('employee_assessed_id', $this->employee_assessed->id)->get();
         $this->employee_assessed_response_summary = [
             'option' => $this->employee_assessed_response->sum('option'),
@@ -81,10 +75,10 @@ class EmployeeAssessmentResultDetail extends Page
                 'score_description' => $this->score_description,
             ]);
 
-            $file_name = 'Filename' . '.pdf';
+            $file_name = Str::slug($this->employee_assessed->employee_name) . ' ' . Str::slug($this->employee_assessed->employee_section) . ' ' . Str::slug($this->employee_assessed->employee_assessment->name) . '.pdf';
             return response()->streamDownload(fn() => print($pdf->output()), $file_name);
         } catch (Exception $e) {
-            dd($e->getMessage());
+            
             Log::error($e->getMessage());
             return Notification::make()->warning()->title('Something was error. Please contact IT')->send();
         }

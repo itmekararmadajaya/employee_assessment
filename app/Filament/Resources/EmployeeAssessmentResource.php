@@ -59,6 +59,7 @@ class EmployeeAssessmentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(EmployeeAssessment::query()->orderBy('created_at', 'desc'))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),

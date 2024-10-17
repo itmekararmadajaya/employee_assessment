@@ -31,6 +31,11 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="mt-3">
+                    <x-filament::button wire:click="openNewUserModal" color="success" wire:click="exportExcelz">
+                        Export Excel
+                    </x-filament::button>
+                </div>
             </div>
         </div>
         <div class="card">

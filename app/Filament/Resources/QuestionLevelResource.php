@@ -13,6 +13,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -45,6 +46,22 @@ class QuestionLevelResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                Action::make('sync_data')
+                    ->label('Sync Data')
+                    ->action(function () {
+                        $positions = Position::get();
+                        foreach($positions as $position){
+                            QuestionLevel::updateOrCreate([
+                                'name' => $position->name,
+                            ], [
+                                'description' => 'QUESTION LEVEL '.$position->name
+                            ]);
+                        }
+
+                        return redirect()->route('filament.admin.resources.question-levels.index');
+                    }),
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
@@ -63,7 +80,7 @@ class QuestionLevelResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -83,8 +100,8 @@ class QuestionLevelResource extends Resource
     {
         return [
             'index' => Pages\ListQuestionLevels::route('/'),
-            'create' => Pages\CreateQuestionLevel::route('/create'),
-            'edit' => Pages\EditQuestionLevel::route('/{record}/edit'),
+            // 'create' => Pages\CreateQuestionLevel::route('/create'),
+            // 'edit' => Pages\EditQuestionLevel::route('/{record}/edit'),
         ];
     }
 }

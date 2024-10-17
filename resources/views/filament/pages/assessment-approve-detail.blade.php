@@ -22,6 +22,24 @@
         </div>
     </div>
     {{-- Modal --}}
+    {{-- Modal --}}
+    <div x-data="{ showModalReassess: @entangle('showModalReassess') }">
+        <div x-show="showModalReassess" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" x-cloak style="z-index: 20;">
+            <div wire:click.away="closeModal()" class="bg-white p-6 rounded shadow-lg lg:w-1/3">
+                <h2 class="text-xl font-bold mb-4">Perbarui Nilai</h2>
+                <div class="mb-4">
+                    Konfirmasi: Anda akan memperbarui nilai, nilai sebelumnya akan terhapus. Apakah Anda yakin?
+                </div>
+                <div>                        
+                </div>
+                <div class="flex justify-end gap-1">
+                    <button wire:click="closeModalReassess()" class="bg-white text-gray-500 border border-gray-400 px-4 py-2 rounded mt-4">Tutup</button>
+                    <button wire:click="reassess()" class="bg-green-500 text-white px-4 py-2 rounded mt-4">Perbarui Nilai</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- Modal --}}
     @if ($employee_assessed->status == 'not_assessed' || $employee_assessed->status == 'on_progress')
         <div class="card">
             Karyawan ini belum dinilai. Mohon untuk segera melakukan penilaian
@@ -165,12 +183,12 @@
                             <tr class="bg-white">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900">Criteria</td>
                                 <td>:</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{$score_detail['criteria']}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed['criteria']}}</td>
                             </tr>
                             <tr class="bg-gray-50">
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900">Description</td>
                                 <td class="">:</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{$score_detail['description']}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed['description']}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -185,6 +203,9 @@
                         </x-filament::button>
                         <x-filament::button color="danger" wire:click="openModalApprove('Reject')">
                             Reject
+                        </x-filament::button>
+                        <x-filament::button color="warning" wire:click="openModalReassess">
+                                Perbarui Nilai
                         </x-filament::button>
                     </div>
                 </div>
