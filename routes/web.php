@@ -8,6 +8,7 @@ use App\Livewire\QuestionEdit;
 use App\Livewire\ShowQuestion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
 
 Route::get('/', function () {
     $user = Auth::user();
@@ -33,8 +34,8 @@ Route::get('employee-assessment/{employee_assessed}', EmployeeAssessment::class)
  * 2. Jika php artisan route:cache maka akan error karena livewire.update duplikat
  */
 Livewire::setUpdateRoute(function ($handle) {
-    return Route::post('/metabase_backend/livewire/update', $handle);
+    return Route::post('/employee_assessment/livewire/update', $handle);
 });
 Livewire::setScriptRoute(function ($handle) {
-    return Route::get('/metabase_backend/livewire/livewire.js', $handle);
+    return Route::get('/employee_assessment/livewire/livewire.js', $handle);
 });
