@@ -26,3 +26,15 @@ Route::get('/question/create', QuestionCreate::class)->name('question-create')->
 Route::get('/question/edit/{id}', QuestionEdit::class)->name('question-edit')->middleware(CustomFilamentAuth::class);
 
 Route::get('employee-assessment/{employee_assessed}', EmployeeAssessment::class)->name('employee-assessment')->middleware(CustomFilamentAuth::class);
+
+/**
+ * Update endpoint livewire
+ * 1. Hanya bisa di php artisan route:clear
+ * 2. Jika php artisan route:cache maka akan error karena livewire.update duplikat
+ */
+Livewire::setUpdateRoute(function ($handle) {
+    return Route::post('/metabase_backend/livewire/update', $handle);
+});
+Livewire::setScriptRoute(function ($handle) {
+    return Route::get('/metabase_backend/livewire/livewire.js', $handle);
+});
