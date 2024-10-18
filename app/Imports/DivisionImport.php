@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Models\DIvision;
+use App\Models\Division;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -16,7 +16,7 @@ class DivisionImport implements ToModel, WithHeadingRow, WithValidation
     */
     public function model(array $row)
     {
-        return DIvision::updateOrCreate([
+        return Division::updateOrCreate([
             'name' => $row['name']
         ]);
     }
