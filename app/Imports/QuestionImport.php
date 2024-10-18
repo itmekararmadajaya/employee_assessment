@@ -25,11 +25,12 @@ class QuestionImport implements ToModel, WithHeadingRow, WithValidation
 
         if($question->save()){
             for($i=1; $i<=5; $i++){
-                $option = new QuestionOption;
-                $option->question_id = $question->id;
-                $option->option = $i;
-                $option->content = $row[$i];
-                $option->save();
+                QuestionOption::updateOrCreate([
+                    'question_id' => $question->id,
+                    'option' => $i,
+                ], [
+                    'content' => $row[$i],
+                ]);
             }
         }
     }
