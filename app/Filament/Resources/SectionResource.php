@@ -50,7 +50,7 @@ class SectionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable()->label('Section'),
+                    ->searchable()->label('Section')->sortable(),
                 Tables\Columns\TextColumn::make('departement.name')
                     ->numeric()
                     ->sortable(),
