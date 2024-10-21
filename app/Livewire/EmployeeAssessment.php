@@ -51,16 +51,14 @@ class EmployeeAssessment extends Component
         $this->employee_assessed->employee_position = $this->employee_assessed->employee->position;
         $this->employee_assessed->employee_section = $this->employee_assessed->employee->section->name;
         $this->employee_assessed->employee_departement = $this->employee_assessed->employee->section->departement->name;
-        if(!empty($this->assessor_data) && $this->assessor_data->approver == $this->user->employee->nik){
-            
-        }else {
+        // if(!empty($this->assessor_data) && $this->assessor_data->approver == $this->user->employee->nik){
             $this->employee_assessed->assessor_id = $this->user->employee->id;
             $this->employee_assessed->assessor_nik = $this->user->employee->nik;
             $this->employee_assessed->assessor_name = $this->user->employee->name;
             $this->employee_assessed->assessor_position = $this->user->employee->position;
             $this->employee_assessed->assessor_section = $this->user->employee->section->name;
             $this->employee_assessed->assessor_departement = $this->user->employee->section->departement->name;
-        }
+        // }
         $this->employee_assessed->save();
         
         $level = QuestionLevel::where('name', $this->employee_assessed->employee->position)->first();
