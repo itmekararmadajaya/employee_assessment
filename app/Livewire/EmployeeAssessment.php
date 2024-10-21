@@ -8,6 +8,7 @@ use App\Models\EmployeeAssessedResponse;
 use App\Models\EmployeeAssessedResponseText;
 use App\Models\QuestionLevel;
 use App\Models\ScoreDescription;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Log\Logger;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,7 @@ class EmployeeAssessment extends Component
 
         abort_if(!$user || !$user->hasRole('assessor'), 403, 'Not Authorized');
 
-        $this->user = $user;
+        $this->user = User::with('employee')->where('id', $user->id)->first();
 
         $this->employee_assessed = EmployeeAssessed::where('id', Crypt::decrypt($employee_assessed))->first();
         abort_if(!$this->employee_assessed, 403, 'Employee Not Found');
@@ -50,7 +51,9 @@ class EmployeeAssessment extends Component
         $this->employee_assessed->employee_position = $this->employee_assessed->employee->position;
         $this->employee_assessed->employee_section = $this->employee_assessed->employee->section->name;
         $this->employee_assessed->employee_departement = $this->employee_assessed->employee->section->departement->name;
-        if($this->assessor_data->approver != $this->user->employee->nik){
+        if(!empty($this->assessor_data) && $this->assessor_data->approver == $this->user->employee->nik){
+            
+        }else {
             $this->employee_assessed->assessor_id = $this->user->employee->id;
             $this->employee_assessed->assessor_nik = $this->user->employee->nik;
             $this->employee_assessed->assessor_name = $this->user->employee->name;
