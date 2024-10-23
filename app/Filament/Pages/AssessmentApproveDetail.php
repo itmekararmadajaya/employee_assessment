@@ -145,7 +145,10 @@ class AssessmentApproveDetail extends Page implements HasForms
         $this->employee_assessed->status = 'on_progress';
         $this->employee_assessed->save();
 
-        return redirect()->route('employee-assessment', $this->employee_assessed->getIdEncrypted());
+        return redirect()->route('employee-assessment', [
+            'employee_assessed' => $this->employee_assessed->getIdEncrypted(),
+            'status' => 'approver_reassess'
+        ]);
     }
 
     public function back(){

@@ -20,6 +20,12 @@ class EmployeeAssessment extends Component
 {
     public $user, $employee_assessed, $assessor_data;
 
+    /**
+     * Status untuk membedakan apakah approver yang menilai ulang / tidak
+     * Jika iya status adalah approver_reassess
+     */
+    public $status = "";
+
     public $all_question, $question;
 
     public $option_selected;
@@ -41,6 +47,8 @@ class EmployeeAssessment extends Component
 
         $this->employee_assessed = EmployeeAssessed::where('id', Crypt::decrypt($employee_assessed))->first();
         abort_if(!$this->employee_assessed, 403, 'Employee Not Found');
+
+        $this->status = request('status', "");
         /**
          * Cek apakah assessor is approver
          */
@@ -51,14 +59,14 @@ class EmployeeAssessment extends Component
         $this->employee_assessed->employee_position = $this->employee_assessed->employee->position;
         $this->employee_assessed->employee_section = $this->employee_assessed->employee->section->name;
         $this->employee_assessed->employee_departement = $this->employee_assessed->employee->section->departement->name;
-        // if(!empty($this->assessor_data) && $this->assessor_data->approver == $this->user->employee->nik){
+        if($this->status != "approver_reassess"){
             $this->employee_assessed->assessor_id = $this->user->employee->id;
             $this->employee_assessed->assessor_nik = $this->user->employee->nik;
             $this->employee_assessed->assessor_name = $this->user->employee->name;
             $this->employee_assessed->assessor_position = $this->user->employee->position;
             $this->employee_assessed->assessor_section = $this->user->employee->section->name;
             $this->employee_assessed->assessor_departement = $this->user->employee->section->departement->name;
-        // }
+        }
         $this->employee_assessed->save();
         
         $level = QuestionLevel::where('name', $this->employee_assessed->employee->position)->first();
@@ -203,7 +211,7 @@ class EmployeeAssessment extends Component
                 $this->employee_assessed->employee_section = $this->employee_assessed->employee->section->name;
                 $this->employee_assessed->employee_departement = $this->employee_assessed->employee->section->departement->name;
 
-                if($this->assessor_data->approver != $this->user->employee->nik){
+                if($this->status != 'approver_reassess'){
                     $this->employee_assessed->assessor_id = $this->user->employee->id;
                     $this->employee_assessed->assessor_nik = $this->user->employee->nik;
                     $this->employee_assessed->assessor_name = $this->user->employee->name;
@@ -228,7 +236,7 @@ class EmployeeAssessment extends Component
                 }
                 $this->employee_assessed->save();
 
-                if($this->assessor_data->approver != $this->user->employee->nik){
+                if($this->status != 'approver_reassess'){
                     return redirect()->route('filament.admin.pages.assessment-detail', [
                         'assessment' => $this->employee_assessed->employee_assessment->slug, 
                         'employee' => Crypt::encrypt($this->employee_assessed->employee_id)]);
@@ -239,7 +247,7 @@ class EmployeeAssessment extends Component
                 }
             } catch (\Exception $e) {
                 Log::error('Error calculating score: ' . $e->getMessage());
-
+                
                 $this->showModal = false;
 
                 $this->toast_error = true;

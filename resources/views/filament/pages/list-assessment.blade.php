@@ -83,9 +83,9 @@
                             </a> --}}
                         </div>
                     @elseif($assessment->status == 'done')
-                        <x-filament::button color="success" class="w-full">
+                        {{-- <x-filament::button color="success" class="w-full">
                             Result
-                        </x-filament::button>
+                        </x-filament::button> --}}
                     @endif
                 </div>
             </div>
