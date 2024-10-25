@@ -11,6 +11,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -54,6 +55,15 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])->viteTheme('resources/css/filament/admin/theme.css');
+            ])->viteTheme('resources/css/filament/admin/theme.css')
+            ->plugins([
+                TableLayoutTogglePlugin::make()
+                ->shareLayoutBetweenPages(false) // allow all tables to share the layout option (requires persistLayoutInLocalStorage to be true)
+                ->displayToggleAction(true) // used to display the toggle action button automatically
+                ->toggleActionHook('tables::toolbar.search.after') // chose the Filament view hook to render the button on
+                ->listLayoutButtonIcon('heroicon-o-list-bullet')
+                ->gridLayoutButtonIcon('heroicon-o-squares-2x2'),
+            ])
+            ->darkMode(false);
     }
 }

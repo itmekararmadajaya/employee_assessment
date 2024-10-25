@@ -39,6 +39,8 @@ class SectionResource extends Resource
                     Forms\Components\Select::make('departement_id')
                         ->relationship('departement', 'name')
                         ->required()
+                        ->searchable()
+                        ->preload()
                         ->columnSpan(2)
                         ->getOptionLabelFromRecordUsing(fn(Model $record) => "$record->name | ".$record->division->name),
                 ])->columns(4)

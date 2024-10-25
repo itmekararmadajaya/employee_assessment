@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Exports\UserAssessorExport;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\Employee;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -18,6 +20,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 use Filament\Pages\Page;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Tables\Actions\Action;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserResource extends Resource
 {
@@ -62,6 +66,27 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                Action::make('export_user_assessor')
+                    ->color('success')
+                    ->action(function () {
+                        $users = User::with('password_not_hash')
+                        ->role('assessor')
+                        ->get();
+
+                        $users = $users->map(function($us){
+                            $final_data['nik'] = $us['nik'];
+                            $final_data['name'] = $us['name'];
+                            $final_data['email'] = $us['email'];
+                            $final_data['password'] = $us['password_not_hash']['password'];
+
+                            return $final_data;
+                        })->toArray();
+                        
+                        $file_name = 'user-assessor-'.Carbon::now()->format('d-m-Y').'.xlsx';
+                        return Excel::download(new UserAssessorExport($users), $file_name);
+                    }),
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),

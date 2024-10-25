@@ -35,6 +35,8 @@ class DepartementResource extends Resource
                         ->maxLength(255),
                     Forms\Components\Select::make('division_id')
                         ->relationship('division', 'name')
+                        ->searchable()
+                        ->preload()
                         ->required(),
                 ])->columns(2)
             ]);

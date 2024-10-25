@@ -3,6 +3,8 @@
 namespace App\Filament\Pages;
 
 use App\Exports\EmployeeAssessmentExport;
+use App\Exports\multiSheetExport;
+use App\Exports\ReportEmployeeAssessmentExport;
 use App\Models\Departement;
 use App\Models\Employee;
 use App\Models\EmployeeAssessed;
@@ -10,15 +12,22 @@ use App\Models\EmployeeAssessedResponseText;
 use App\Models\EmployeeAssessment;
 use App\Models\Position;
 use App\Models\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\Summarizers\Count;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -32,10 +41,12 @@ class EmployeeAssessmentResult extends Page implements HasTable
 
     protected static string $view = 'filament.pages.employee-assessment-result';
 
-    public $employee_assessment, $assessment_data;
+    public $assessment, $assessment_data;
 
     //Url Params
     public $status;
+
+    public $page = 'Admin';
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -50,13 +61,13 @@ class EmployeeAssessmentResult extends Page implements HasTable
         }
 
         $slug = request('employee-assessment');
-        $this->employee_assessment = EmployeeAssessment::where('slug', $slug)->first();
-        abort_unless($this->employee_assessment, 403, 'Employee Assessment Not Found');
+        $this->assessment = EmployeeAssessment::where('slug', $slug)->first();
+        abort_unless($this->assessment, 403, 'Employee Assessment Not Found');
 
         /**
          * Count Assessment Data
          */
-        $assessment_id = $this->employee_assessment->id;
+        $assessment_id = $this->assessment->id;
         $get_assessment_data = Employee::with(['assessments' => function ($query) use ($assessment_id) {
             return $query->where('employee_assessment_id', $assessment_id);
         }])->get();
@@ -96,7 +107,7 @@ class EmployeeAssessmentResult extends Page implements HasTable
 
     public function table(Table $table): Table
     {
-        $employee_assessment_id = $this->employee_assessment->id;
+        $employee_assessment_id = $this->assessment->id;
         $status = $this->status;
 
         if ($status != null && $status != 'not_assessed') {
@@ -110,13 +121,19 @@ class EmployeeAssessmentResult extends Page implements HasTable
                     default => 'bg-gray-50'
                 })
                 ->columns([
-                    TextColumn::make('employee_nik')->searchable()->label('NIK'),
-                    TextColumn::make('employee_name')->searchable()->label('Name'),
-                    TextColumn::make('employee_position')->searchable()->label('Position'),
-                    TextColumn::make('employee_section')->searchable()->label('Section'),
-                    TextColumn::make('employee_departement')->searchable()->toggleable(true)->label('Departement'),
-                    TextColumn::make('status')->searchable(),
+                    Split::make([
+                        Stack::make([
+                            ViewColumn::make('custom')->view('filament.table-template.employee-assessment')
+                        ])
+                    ])
                 ])->filters([
+                    Filter::make('employee_name')
+                        ->form([
+                            TextInput::make('name')
+                        ])
+                        ->query(function (Builder $query, array $data): Builder {
+                            return $query->where('employee_name', 'like', '%'.$data['name'].'%');
+                        }),
                     SelectFilter::make('employee_section')
                         ->options(Section::get()->pluck('name', 'name'))
                         ->multiple()
@@ -130,19 +147,21 @@ class EmployeeAssessmentResult extends Page implements HasTable
                         ->preload()
                         ->label('Departement'),
                     SelectFilter::make('position')->options(Position::get()->pluck('name', 'name'))->multiple()
-                ])
+                ], layout: FiltersLayout::AboveContent)
                 ->filtersTriggerAction(
                     fn(Action $action) => $action
                         ->button()
                         ->label('Filter'),
                 )
                 ->actions([
-                    Action::make('detail')
-                        ->url(fn(EmployeeAssessed $record): string => route('filament.admin.pages.employee-assessment-result-detail', ['employee-assessed' => Crypt::encrypt($record->id)]))
-                        ->visible(fn(EmployeeAssessed $record): bool => $record->status != 'on_progress')
+                    // Action::make('detail')
+                    //     ->url(fn(EmployeeAssessed $record): string => route('filament.admin.pages.employee-assessment-result-detail', ['employee-assessed' => Crypt::encrypt($record->id)]))
+                    //     ->visible(fn(EmployeeAssessed $record): bool => $record->status != 'on_progress')
                 ], position: ActionsPosition::BeforeCells)
                 ->bulkActions([
-                    // ...
+                ])
+                ->contentGrid([
+                    'md' => 3,
                 ]);
         } else {
             $table_data = $table
@@ -182,14 +201,20 @@ class EmployeeAssessmentResult extends Page implements HasTable
                         )
                 )
                 ->columns([
-                    TextColumn::make('nik')->searchable(),
-                    TextColumn::make('name')->searchable(),
-                    TextColumn::make('position')->searchable(),
-                    TextColumn::make('section.name')->searchable(),
-                    TextColumn::make('section.departement.name')->searchable(),
-                    TextColumn::make('assessor')->searchable(),
+                    Split::make([
+                        Stack::make([
+                            ViewColumn::make('custom')->view('filament.table-template.employee')
+                        ])
+                    ])
                 ])
                 ->filters([
+                    Filter::make('employee_name')
+                        ->form([
+                            TextInput::make('name')
+                        ])
+                        ->query(function (Builder $query, array $data): Builder {
+                            return $query->where('name', 'like', '%'.$data['name'].'%');
+                        }),
                     SelectFilter::make('section')
                         ->relationship('section', 'name')
                         ->multiple()
@@ -201,7 +226,7 @@ class EmployeeAssessmentResult extends Page implements HasTable
                         ->searchable()
                         ->preload(),
                     SelectFilter::make('position')->options(Position::get()->pluck('name', 'name'))->multiple()
-                ])
+                ], layout: FiltersLayout::AboveContent)
                 ->filtersTriggerAction(
                     fn(Action $action) => $action
                         ->button()
@@ -209,7 +234,9 @@ class EmployeeAssessmentResult extends Page implements HasTable
                 )
                 ->actions([], position: ActionsPosition::BeforeCells)
                 ->bulkActions([
-                    // ...
+                ])
+                ->contentGrid([
+                    'md' => 3,
                 ]);
         }
 
@@ -223,9 +250,8 @@ class EmployeeAssessmentResult extends Page implements HasTable
 
     public function exportExcel()
     {
-        $employee_assessed = EmployeeAssessed::with('employee_assessed_responses_text')->where('employee_assessment_id', $this->employee_assessment->id)->get();
+        $employee_assessed = EmployeeAssessed::with('employee_assessed_responses_text')->where('employee_assessment_id', $this->assessment->id)->get();
         $aspects = EmployeeAssessedResponseText::whereIn('employee_assessed_id', $employee_assessed->pluck('id')->toArray())->distinct()->pluck('aspect')->toArray();
-
         $final_data = $employee_assessed->map(function ($assessed) use ($aspects) {
             $employee_data = [
                 'nik' => $assessed->employee_nik,
@@ -243,11 +269,12 @@ class EmployeeAssessmentResult extends Page implements HasTable
             }
 
             foreach ($assessed->employee_assessed_responses_text as $response) {
-                $employee_data[$response->aspect] = $response->score;
+                $employee_data[$response->aspect] = "=" . $response->weight . "*" . $response->option;
             }
             return $employee_data;
         })->toArray();
 
-        return Excel::download(new EmployeeAssessmentExport($final_data), 'example.xlsx');
+        $file_name = 'report-'.$this->assessment->slug.'.xlsx';
+        return Excel::download(new ReportEmployeeAssessmentExport($final_data), $file_name);
     }
 }

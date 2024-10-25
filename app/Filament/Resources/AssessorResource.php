@@ -38,14 +38,20 @@ class AssessorResource extends Resource
                     Forms\Components\Select::make('section_id')
                         ->relationship('section', 'name')
                         ->getOptionLabelFromRecordUsing(fn(Model $record) => $record->name." | ".$record->departement->name." | ".$record->departement->division->name)
-                        ->required(),
+                        ->required()
+                        ->searchable()
+                        ->preload(),
                     Select::make('assessor')
                         ->options(User::role('assessor')->get()->pluck('nik', 'nik'))
                         ->label('Assessor / Penilai')
+                        ->searchable()
+                        ->preload()
                         ->required(),
                     Select::make('assessed')
                         ->options(Position::get()->pluck('name', 'name'))
                         ->multiple()
+                        ->searchable()
+                        ->preload()
                         ->label('Assessed / Yang Dinilai')
                         ->helperText('Yang dinilai dapat lebih dari 1')
                         ->required()
@@ -57,6 +63,8 @@ class AssessorResource extends Resource
                         }),
                     Select::make('approver')
                         ->options(User::role('assessor')->get()->pluck('nik', 'nik'))
+                        ->searchable()
+                        ->preload()
                         ->label('Approver / Pemberi Persetujuan')
                         ->required(),
                 ])->columns(2)

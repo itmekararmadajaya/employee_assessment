@@ -6,6 +6,7 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeWriting;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
@@ -29,22 +30,22 @@ class EmployeeAssessmentExport implements FromArray, WithEvents, WithHeadings
         return array_merge(array_keys($this->data[0]));
     }
 
-    public static function beforeWriting(BeforeWriting $event)
-    {
-        $sheet = $event->writer->getDelegate()->getActiveSheet();
-
-        $highestRow = $sheet->getHighestRow();
-        $highestColumn = $sheet->getHighestColumn();
-        
-        for ($row = 2; $row <= $highestRow; $row++) {
-            $sheet->setCellValue("F{$row}", "=(SUM(I{$row}:$highestColumn{$row})/100)*2");
-        }
-    }
-
     public function registerEvents(): array
     {
         return [
-            BeforeWriting::class => [self::class, 'beforeWriting'],
+            AfterSheet::class => function (AfterSheet $event){
+                $highestRow = $event->sheet->getHighestRow();
+                $highestColumn = $event->sheet->getHighestColumn();
+
+                for ($row = 2; $row <= $highestRow; $row++) {
+                    $event->sheet->setCellValue("F{$row}", "=(SUM(I{$row}:$highestColumn{$row})/100)*2");
+
+                    /**
+                     * Tidak bisa karena B+ pasti terbaja B
+                     */
+                    // $event->sheet->setCellValue("H{$row}", "=INDEX(''Worksheet 1'!E2:E6,MATCH(Worksheet!G{$row},'Worksheet 1'!D2:D6),0)");
+                }
+            }
         ];
     }
 }

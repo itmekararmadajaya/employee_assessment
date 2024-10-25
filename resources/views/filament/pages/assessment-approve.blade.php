@@ -89,4 +89,22 @@
             Back
         </x-filament::button>
     </div>
+    {{-- Modal --}}
+    <div x-data="{ showModalApprove: @entangle('showModalApprove') }">
+        <div x-show="showModalApprove" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" x-cloak style="z-index: 20;">
+            <div wire:click.away="closeModal()" class="bg-white p-6 rounded shadow-lg lg:w-1/3">
+                <h2 class="text-xl font-bold mb-4">Setujui/Approve Penilaian</h2>
+                <div class="mb-4">
+                    Konfirmasi: Anda akan menyetujui penilaian ini. Apakah Anda yakin?
+                </div>
+                <div>                        
+                </div>
+                <div class="flex justify-end gap-1">
+                    <button wire:click="closeModalApprove()" class="bg-white text-gray-500 border border-gray-400 px-4 py-2 rounded mt-4">Tutup</button>
+                    <button wire:click="approve()" class="bg-green-500 text-white px-4 py-2 rounded mt-4">Approve</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- Modal --}}
 </x-filament-panels::page>

@@ -9,22 +9,31 @@ use App\Models\EmployeeAssessed;
 use App\Models\EmployeeAssessment;
 use App\Models\Position;
 use App\Models\Section;
+use Carbon\Carbon;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\ActionsPosition;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\QueryBuilder;
 use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Session;
 
 class AssessmentApprove extends Page implements HasTable
 {
@@ -38,6 +47,11 @@ class AssessmentApprove extends Page implements HasTable
     
     //Url Params
     public $status;
+
+    //Page Params
+    public $page = 'AssessmentApprove';
+    public $showModalApprove = false;
+    public $get_id_employee_assessed_for_approve;
 
     public static function shouldRegisterNavigation(): bool {
         return false;
@@ -76,6 +90,11 @@ class AssessmentApprove extends Page implements HasTable
          * Filter by status
          */
         $this->status = request('status') ? request('status') : 'done';
+
+        if(Session::get('approve-status') == 'success'){
+            Notification::make()->title('Success Approve')->success()->send();
+            Session::forget('approve-status');
+        }
     }
 
     public function table(Table $table){
@@ -94,23 +113,21 @@ class AssessmentApprove extends Page implements HasTable
         }
         return $table
                 ->query($query)
-                ->recordClasses(fn (EmployeeAssessed $record) => match ($record->status){
-                    'done' => 'bg-yellow-100',
-                    'rejected' => 'bg-red-100',
-                    'approved' => 'bg-green-100',
-                })
                 ->columns([
-                    TextColumn::make('assessment_date')->dateTime()->searchable()->toggleable(true),
-                    TextColumn::make('employee_nik')->searchable(),
-                    TextColumn::make('employee_name')->searchable(),
-                    TextColumn::make('employee_position')->searchable(),
-                    TextColumn::make('employee_section')->searchable(),
-                    TextColumn::make('employee_departement')->searchable()->toggleable(true),
-                    TextColumn::make('assessor_name')->searchable(),
-                    TextColumn::make('approver_name')->searchable(),
-                    TextColumn::make('status')->searchable(),
+                    Split::make([
+                        Stack::make([
+                            ViewColumn::make('custom')->view('filament.table-template.employee-assessment')
+                        ])
+                    ])
                 ])
                 ->filters([
+                    Filter::make('employee_name')
+                        ->form([
+                            TextInput::make('employee_name')
+                        ])
+                        ->query(function (Builder $query, array $data): Builder {
+                            return $query->where('employee_name', 'like', '%'.$data['employee_name'].'%');
+                        }),
                     SelectFilter::make('employee_section')
                         ->options(Section::get()->pluck('name', 'name'))
                         ->preload()
@@ -122,19 +139,79 @@ class AssessmentApprove extends Page implements HasTable
                         ->preload()
                         ->searchable(),
                     SelectFilter::make('employee_position')->options(Position::get()->pluck('name', 'name'))->multiple()->label('Position')
-                ])
+                ], layout: FiltersLayout::AboveContent)
                 ->filtersTriggerAction(
                     fn (Action $action) => $action
                         ->button()
                         ->label('Filter'),
                 )
                 ->actions([
-                    Action::make('detail')
-                    ->url(fn (EmployeeAssessed $record): string => route('filament.admin.pages.assessment-approve-detail', ['employee-assessed' => Crypt::encrypt($record->id)]))
                 ], position: ActionsPosition::BeforeCells)
                 ->bulkActions([
-                    // ...
-                ]);
+                    BulkAction::make('approve_selected')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records){
+                            try {
+                                foreach($records as $record){
+                                    $record->status = 'approved';
+                                    $record->approved_by = $this->user->employee->id;
+                                    $record->approved_at = Carbon::now()->format('Y-m-d H:i:s');
+                                    $record->approver_nik = $this->user->employee->nik;
+                                    $record->approver_name = $this->user->employee->name;
+                                    $record->approver_position = $this->user->employee->position;
+                                    $record->approver_section = $this->user->employee->section->name;
+                                    $record->approver_departement = $this->user->employee->section->departement->name;
+                                    $record->update();
+                                }
+                                
+                                Session::put('approve-status', 'success');
+    
+                                return redirect()->route('filament.admin.pages.assessment-approve', [
+                                    'assessment' => $this->assessment->slug
+                                ]);
+                            } catch (\Throwable $th) {
+                                Notification::make()->title('Approve gagal. Silahkan kontak IT.')->danger()->send();
+                            }
+                        })
+                ])
+                ->contentGrid([
+                    'md' => 3,
+                ])
+                ->selectable();
+    }
+
+    public function approveConfirmation($id){
+        $this->get_id_employee_assessed_for_approve = $id;
+        $this->showModalApprove = true;
+    }
+
+    public function closeModalApprove(){
+        $this->showModalApprove = false;
+    }
+
+    public function approve(){
+        try {
+            EmployeeAssessed::where('id', $this->get_id_employee_assessed_for_approve)->update([
+                'status' => 'approved',
+                'approved_by' => $this->user->employee->id,
+                'approved_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'approver_nik' => $this->user->employee->nik,
+                'approver_name' => $this->user->employee->name,
+                'approver_position' => $this->user->employee->position,
+                'approver_section' => $this->user->employee->section->name,
+                'approver_departement' => $this->user->employee->section->departement->name,
+            ]);
+
+            Session::put('approve-status', 'success');
+
+            return redirect()->route('filament.admin.pages.assessment-approve', [
+                'assessment' => $this->assessment->slug
+            ]);
+        } catch (\Throwable $th) {
+            Notification::make()->title('Approve gagal. Silahkan kontak IT.')->danger()->send();
+            $this->get_id_employee_assessed_for_approve = "";
+        }
     }
 
     public function back(){
