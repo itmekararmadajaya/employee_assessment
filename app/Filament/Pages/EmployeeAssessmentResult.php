@@ -250,7 +250,7 @@ class EmployeeAssessmentResult extends Page implements HasTable
 
     public function exportExcel()
     {
-        $employee_assessed = EmployeeAssessed::with('employee_assessed_responses_text')->where('employee_assessment_id', $this->assessment->id)->get();
+        $employee_assessed = EmployeeAssessed::with('employee_assessed_responses_text')->where('employee_assessment_id', $this->assessment->id)->where('status', 'approved')->get();
         $aspects = EmployeeAssessedResponseText::whereIn('employee_assessed_id', $employee_assessed->pluck('id')->toArray())->distinct()->pluck('aspect')->toArray();
         $final_data = $employee_assessed->map(function ($assessed) use ($aspects) {
             $employee_data = [

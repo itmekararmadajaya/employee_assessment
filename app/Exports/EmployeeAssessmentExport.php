@@ -2,15 +2,17 @@
 
 namespace App\Exports;
 
+use App\Models\ScoreDescription;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeWriting;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
-class EmployeeAssessmentExport implements FromArray, WithEvents, WithHeadings
+class EmployeeAssessmentExport implements FromArray, WithEvents, WithHeadings, WithTitle
 {
     protected $data;
 
@@ -32,20 +34,38 @@ class EmployeeAssessmentExport implements FromArray, WithEvents, WithHeadings
 
     public function registerEvents(): array
     {
+   
         return [
             AfterSheet::class => function (AfterSheet $event){
                 $highestRow = $event->sheet->getHighestRow();
                 $highestColumn = $event->sheet->getHighestColumn();
 
+                $countOfScoreDescription = ScoreDescription::count();
+
                 for ($row = 2; $row <= $highestRow; $row++) {
                     $event->sheet->setCellValue("F{$row}", "=(SUM(I{$row}:$highestColumn{$row})/100)*2");
 
-                    /**
-                     * Tidak bisa karena B+ pasti terbaja B
-                     */
-                    // $event->sheet->setCellValue("H{$row}", "=INDEX(''Worksheet 1'!E2:E6,MATCH(Worksheet!G{$row},'Worksheet 1'!D2:D6),0)");
+                    $formulaCriteria = "";
+                    $formulaDescription = "";
+
+                    for ($i = 2; $i <= $countOfScoreDescription + 1; $i++) {
+                        $formulaCriteria .= "IF(F{$row}>='Score Description'!B{$i},'Score Description'!D{$i},";
+                        $formulaDescription .= "IF(G{$row}='Score Description'!D{$i},'Score Description'!E{$i},";
+                    }
+                    $formulaCriteria .= "\"NOT FOUND\"";
+                    $formulaCriteria .= str_repeat(")", $countOfScoreDescription);
+                    $formulaDescription .= "\"NOT FOUND\"";
+                    $formulaDescription .= str_repeat(")", $countOfScoreDescription);
+
+                    $event->sheet->setCellValue("G{$row}", "=$formulaCriteria");
+                    $event->sheet->setCellValue("H{$row}", "=$formulaDescription");
                 }
             }
         ];
+    }
+
+    public function title(): string
+    {
+        return 'Employee Assessment Report';
     }
 }

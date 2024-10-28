@@ -21,8 +21,8 @@ class ReportEmployeeAssessmentExport implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[] = new EmployeeAssessmentExport($this->data);
         $sheets[] = new ScoreDescriptionExport();
+        $sheets[] = new EmployeeAssessmentExport($this->data);
 
         return $sheets;
     }
