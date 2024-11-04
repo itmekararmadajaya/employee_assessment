@@ -54,7 +54,7 @@
             <div class="bg-gray-50 border bordered mb-2">
                 <div class="py-3 px-5 flex justify-between items-center">
                     <div>
-                        <span wire:ignore>ASPEK : <strong>KETEPATAN</strong></span>
+                        <span wire:ignore>ASPEK : <strong>{{$question->aspect}}</strong></span>
                     </div>
                 </div>
                 <div class="py-3 px-5 bg-white">
