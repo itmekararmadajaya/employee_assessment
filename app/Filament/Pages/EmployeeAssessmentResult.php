@@ -11,6 +11,7 @@ use App\Models\EmployeeAssessed;
 use App\Models\EmployeeAssessedResponseText;
 use App\Models\EmployeeAssessment;
 use App\Models\Position;
+use App\Models\ScoreDescription;
 use App\Models\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
@@ -112,14 +113,14 @@ class EmployeeAssessmentResult extends Page implements HasTable
 
         if ($status != null && $status != 'not_assessed') {
             $table_data = $table->query(EmployeeAssessed::query()->where('employee_assessment_id', $employee_assessment_id)->where('status', $status))
-                ->recordClasses(fn(EmployeeAssessed $record) => match ($record->status) {
-                    'not_assessed' => 'bg-white',
-                    'on_progress' => 'bg-blue-100',
-                    'done' => 'bg-yellow-100',
-                    'rejected' => 'bg-red-100',
-                    'approved' => 'bg-green-100',
-                    default => 'bg-gray-50'
-                })
+                // ->recordClasses(fn(EmployeeAssessed $record) => match ($record->status) {
+                //     'not_assessed' => 'bg-white',
+                //     'on_progress' => 'bg-blue-100',
+                //     'done' => 'bg-yellow-100',
+                //     'rejected' => 'bg-red-100',
+                //     'approved' => 'bg-green-100',
+                //     default => 'bg-gray-50'
+                // })
                 ->columns([
                     Split::make([
                         Stack::make([
@@ -146,7 +147,8 @@ class EmployeeAssessmentResult extends Page implements HasTable
                         ->searchable()
                         ->preload()
                         ->label('Departement'),
-                    SelectFilter::make('position')->options(Position::get()->pluck('name', 'name'))->multiple()
+                    SelectFilter::make('position')->options(Position::get()->pluck('name', 'name'))->multiple(),
+                    SelectFilter::make('criteria')->options(ScoreDescription::get()->pluck('criteria', 'criteria'))
                 ], layout: FiltersLayout::AboveContent)
                 ->filtersTriggerAction(
                     fn(Action $action) => $action

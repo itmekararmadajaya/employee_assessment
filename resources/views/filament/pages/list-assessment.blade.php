@@ -2,10 +2,9 @@
     <div class="card">
         Information
     </div>
-
     <div class="lg:flex flex-wrap" style="gap: 5px;">
         @foreach ($employee_assessments as $assessment)
-            <div class="card card-width-32 bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="card card-width-32 bg-white shadow-lg rounded-lg overflow-hidden mb-2">
                 <div class="p-4 border-b border-gray-200">
                     <h2 class="text-xl font-semibold text-gray-800">{{ $assessment->name }}</h2>
                 </div>
@@ -73,7 +72,7 @@
                         <div class="flex gap-3">
                             <a class="w-full" href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug])}}">
                                 <x-filament::button class="w-full">
-                                    Assess
+                                    Mulai Penilaian
                                 </x-filament::button>
                             </a>
                             {{-- <a class="w-1/2" href="{{route('filament.admin.pages.assessment', ['assessment' => $assessment->slug])}}">

@@ -26,12 +26,19 @@ class AssessmentApproveDetail extends Page implements HasForms
 
     protected static string $view = 'filament.pages.assessment-approve-detail';
 
+    protected static ?string $title = "Detail Penyetujuan Penilaian";
+
     public $user, $employee_assessed, $employee_assessed_response, $employee_assessed_response_summary, $score_description;
 
     public $showModalApprove = false, $approve_slug, $modalTitle, $modalBody, $showModalReassess = false;
 
     //Form Reject
     public $rejected_msg;
+
+    /**
+     * Form Additional Data
+     */
+    public $approver_comments = "";
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -103,6 +110,7 @@ class AssessmentApproveDetail extends Page implements HasForms
     public function accept(){
         if($this->approve_slug == 'Approve'){
             $this->employee_assessed->status = 'approved';
+            $this->employee_assessed->approver_comments = $this->approver_comments;
         }elseif($this->approve_slug == 'Reject'){
             $this->validate([
                 'rejected_msg' => 'required|string'

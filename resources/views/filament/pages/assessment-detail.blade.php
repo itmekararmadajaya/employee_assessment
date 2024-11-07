@@ -1,32 +1,14 @@
 <x-filament-panels::page>
-    {{-- Modal --}}
-    <div x-data="{ showModalReassess: @entangle('showModalReassess') }">
-        <div x-show="showModalReassess" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" x-cloak style="z-index: 20;">
-            <div wire:click.away="closeModal()" class="bg-white p-6 rounded shadow-lg lg:w-1/3">
-                <h2 class="text-xl font-bold mb-4">Perbarui Nilai</h2>
-                <div class="mb-4">
-                    Konfirmasi: Anda akan memperbarui nilai, nilai sebelumnya akan terhapus. Apakah Anda yakin?
-                </div>
-                <div>                        
-                </div>
-                <div class="flex justify-end gap-1">
-                    <button wire:click="closeModalReassess()" class="bg-white text-gray-500 border border-gray-400 px-4 py-2 rounded mt-4">Tutup</button>
-                    <button wire:click="reassess()" class="bg-green-500 text-white px-4 py-2 rounded mt-4">Perbarui Nilai</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {{-- Modal --}}
     @if ($employee_assessed->status == 'on_progress' || $employee_assessed->status == 'not_assessed')
         <div class="card">
             Karyawan ini belum dinilai. Mohon untuk segera melakukan penilaian
         </div>
     @elseif($employee_assessed->status == 'done' || $employee_assessed->status == 'approved' || $employee_assessed->status == 'rejected')
     <div class="grid-2">
-        <div>
+        <div class="mb-2">
             <div class="card">
                 <div class="mb-5">
-                    <span class="title">Employee Information</span>
+                    <span class="title">Informasi Karyawan</span>
                 </div>
                 <div>
                     <table class="w-full">
@@ -37,12 +19,12 @@
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->employee_nik}}</td>
                             </tr>
                             <tr class="bg-white">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Name</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Nama</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->employee_name}}</td>
                             </tr>
                             <tr class="bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Position</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Posisi</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->employee_position}}</td>
                             </tr>
@@ -61,10 +43,10 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div class="mb-2">
             <div class="card">
                 <div class="mb-5">
-                    <span class="title">Assessor Information</span>
+                    <span class="title">Informasi Penilai (Assessor)</span>
                 </div>
                 <div>
                     <table class="w-full">
@@ -75,12 +57,12 @@
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->assessor_nik}}</td>
                             </tr>
                             <tr class="bg-white">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Name</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Nama</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->assessor_name}}</td>
                             </tr>
                             <tr class="bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Position</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Posisi</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->assessor_position}}</td>
                             </tr>
@@ -99,21 +81,21 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div class="mb-2">
             <div class="card">
                 <div class="mb-5">
-                    <span class="title">Assessment Information</span>
+                    <span class="title">Periode Penilaian</span>
                 </div>
                 <div>
                     <table class="w-full">
                         <tbody>
                             <tr class="bg-gray-50">
-                                <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Name</td>
+                                <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Nama</td>
                                 <td>:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->employee_assessment->name}}</td>
                             </tr>
                             <tr class="bg-white">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Date</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Tanggal</td>
                                 <td>:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->assessment_date}}</td>
                             </tr>
@@ -148,23 +130,23 @@
         <div>
             <div class="card">
                 <div class="mb-5">
-                    <span class="title">Score Detail</span>
+                    <span class="title">Skor Penilaian</span>
                 </div>
                 <div>
                     <table class="w-full">
                         <tbody>
                             <tr class="bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Score</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Skor</td>
                                 <td>:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->score}}</td>
                             </tr>
                             <tr class="bg-white">
-                                <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Criteria</td>
+                                <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Kriteria</td>
                                 <td>:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed['criteria']}}</td>
                             </tr>
                             <tr class="bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Description</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Deskripsi</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed['description']}}</td>
                             </tr>
@@ -188,35 +170,35 @@
     </div>
     <div class="card">
         <div class="mb-5">
-            <span class="title">Assessment Result</span>
+            <span class="title">Hasil Penilaian</span>
         </div>
         <div class="overflow-x-auto w-full">
             <table class="bordered-table">
                 <thead>
                     <tr>
                         <th style="width: 15%">
-                            <div class="text-center">
-                                Aspect
+                            <div>
+                                Aspek
                             </div>
                         </th>
                         <th style="width: 75%">
                             <div>
-                                Question
+                                Pernyataan
                             </div>
                         </th>
                         <th style="width: 5%">
                             <div class="text-center">
-                                Option
+                                Nilai
                             </div>
                         </th>
                         <th style="width: 5%">
                             <div class="text-center">
-                                Weight
+                                Bobot
                             </div>
                         </th>
                         <th style="width: 5%">
                             <div class="text-center">
-                                Score
+                                Skor
                             </div>
                         </th>
                     </tr>
@@ -225,7 +207,7 @@
                     @foreach ($employee_assessed_response as $key => $response)
                         <tr>
                             <td>
-                                <div class="text-center">
+                                <div>
                                     {{$response->aspect}}
                                 </div>
                             </td>
@@ -273,13 +255,37 @@
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            Deskripsi Pekerjaan
+                        </td>
+                        <td colspan="4">
+                            {{$employee_assessed->job_description}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Komentar Penilai
+                        </td>
+                        <td colspan="4">
+                            {{$employee_assessed->assessor_comments}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Komentar Penyetuju
+                        </td>
+                        <td colspan="4">
+                            {{$employee_assessed->approver_comments}}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
     <div class="card">
         <div class="mb-5">
-            <span class="title">Score Detail</span>
+            <span class="title">Deskripsi Skor</span>
         </div>
         <div class="overflow-x-auto w-full">
             <table class="bordered-table">
@@ -292,10 +298,10 @@
                         </th>
                         <th>
                             <div class="text-center">
-                                Criteria
+                                Kriteria
                             </div>
                         </th>
-                        <th>Description</th>
+                        <th>Deskripsi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -324,8 +330,26 @@
     </div>
     <div>
         <x-filament::button color="gray" wire:click="back">
-            Back
+            Kembali
         </x-filament::button>
     </div>
     @endif
+    {{-- Modal --}}
+    <div x-data="{ showModalReassess: @entangle('showModalReassess') }">
+        <div x-show="showModalReassess" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" x-cloak style="z-index: 20;">
+            <div wire:click.away="closeModal()" class="bg-white p-6 rounded shadow-lg lg:w-1/3">
+                <h2 class="text-xl font-bold mb-4">Perbarui Nilai</h2>
+                <div class="mb-4">
+                    Konfirmasi: Anda akan memperbarui nilai, nilai sebelumnya akan terhapus. Apakah Anda yakin?
+                </div>
+                <div>                        
+                </div>
+                <div class="flex justify-end gap-1">
+                    <button wire:click="closeModalReassess()" class="bg-white text-gray-500 border border-gray-400 px-4 py-2 rounded mt-4">Tutup</button>
+                    <button wire:click="reassess()" class="bg-green-500 text-white px-4 py-2 rounded mt-4">Perbarui Nilai</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- Modal --}}
 </x-filament-panels::page>

@@ -1,9 +1,10 @@
 <x-filament-panels::page>
+    <span class="fi-header-heading text-2xl font-bold tracking-tight text-gray-950 dark:text-white sm:text-3xl">Halaman Penyetujuan Penilaian {{$page_title}}</span>
     <div class="grid-2">
         <div>
             <div class="card">
                 <div class="mb-3">
-                    <span class="title">Assessment Data</span>
+                    <span class="title">Informasi Status Penilaian</span>
                 </div>
                 <div class="mb-3 overflow-y-auto">
                     <table class="border border-gray-300">
@@ -78,7 +79,7 @@
     </div>
     <div class="card">
         <div class="mb-3">
-            <section class="title">Employee Assessment Status {{$status}}</section>
+            <section class="title">Daftar Penilaian Karyawan Status {{$status}}</section>
         </div>
         <div>
             {{$this->table}}
@@ -95,9 +96,14 @@
             <div wire:click.away="closeModal()" class="bg-white p-6 rounded shadow-lg lg:w-1/3">
                 <h2 class="text-xl font-bold mb-4">Setujui/Approve Penilaian</h2>
                 <div class="mb-4">
-                    Konfirmasi: Anda akan menyetujui penilaian ini. Apakah Anda yakin?
+                    Konfirmasi: Anda akan menyetujui penilaian ini. Apakah Anda yakin? Silahkan isi beberapa keterangan berikut.
                 </div>
-                <div>                        
+                <div>
+                    <div>
+                        <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Komentar Penyetuju</label>
+                        <textarea wire:model="approver_comments" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        @error('approver_comments') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror  
+                    </div>
                 </div>
                 <div class="flex justify-end gap-1">
                     <button wire:click="closeModalApprove()" class="bg-white text-gray-500 border border-gray-400 px-4 py-2 rounded mt-4">Tutup</button>

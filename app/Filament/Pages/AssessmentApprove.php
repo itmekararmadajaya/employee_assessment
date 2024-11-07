@@ -42,6 +42,10 @@ class AssessmentApprove extends Page implements HasTable
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.assessment-approve';
+
+    protected static ?string $title = "";
+
+    public $page_title;
     
     public $user, $assessment, $user_approver_data, $user_assessor_data, $section_id, $position, $employee_assessed_id, $assessment_data;
     
@@ -52,6 +56,11 @@ class AssessmentApprove extends Page implements HasTable
     public $page = 'AssessmentApprove';
     public $showModalApprove = false;
     public $get_id_employee_assessed_for_approve;
+
+    /**
+     * Form Additional Data
+     */
+    public $approver_comments = "";
 
     public static function shouldRegisterNavigation(): bool {
         return false;
@@ -68,6 +77,8 @@ class AssessmentApprove extends Page implements HasTable
         $slug = request('assessment');
         $this->assessment = EmployeeAssessment::where('slug', $slug)->first();
         abort_unless($this->assessment, 403, 'Assessment Not Found');
+
+        $this->page_title = $this->assessment->name;
 
         /**
          * Get user approver data (User Ini)
@@ -201,6 +212,8 @@ class AssessmentApprove extends Page implements HasTable
                 'approver_position' => $this->user->employee->position,
                 'approver_section' => $this->user->employee->section->name,
                 'approver_departement' => $this->user->employee->section->departement->name,
+
+                'approver_comments' => $this->approver_comments,
             ]);
 
             Session::put('approve-status', 'success');

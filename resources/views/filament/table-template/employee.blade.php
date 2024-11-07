@@ -1,8 +1,8 @@
-{{-- Kolom tabel untuk Employee Assessed Data --}}
+{{-- Kolom tabel untuk Employee Assessed Data (Yang Belum Dinilai) --}}
 <div class="w-full">
     <table class="bordered-table" style="font-size: 14px;">
         <tr>
-            <td style="width: 50px;">Name</td>
+            <td style="width: 50px;">Nama</td>
             <td>{{$getRecord()->name}}</td>
         </tr>
         <tr>

@@ -43,6 +43,10 @@ class Assessment extends Page implements HasTable, HasForms
 
     protected static string $view = 'filament.pages.assessment';
 
+    protected static ?string $title = "";
+
+    public $page_title;
+
     public $user, $user_assessor_data, $assessment, $section, $employee_assessed, $assessment_data = [], $count_must_be_approve = 0, $user_approver_data;
 
     //Table
@@ -71,6 +75,8 @@ class Assessment extends Page implements HasTable, HasForms
         $slug = request('assessment');
         $this->assessment = EmployeeAssessment::where('slug', $slug)->first();
         abort_unless($this->assessment, 403, 'Assessment Not Found');
+
+        $this->page_title = $this->assessment->name;
 
         /**
          * Get user assessor data

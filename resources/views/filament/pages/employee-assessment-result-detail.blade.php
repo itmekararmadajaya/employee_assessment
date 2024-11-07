@@ -8,7 +8,7 @@
         <div>
             <div class="card">
                 <div class="mb-5">
-                    <span class="title">Employee Information</span>
+                    <span class="title">Informasi Karyawan</span>
                 </div>
                 <div>
                     <table class="w-full">
@@ -19,12 +19,12 @@
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->employee_nik}}</td>
                             </tr>
                             <tr class="bg-white">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Name</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Nama</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->employee_name}}</td>
                             </tr>
                             <tr class="bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Position</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Posisi</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->employee_position}}</td>
                             </tr>
@@ -46,7 +46,7 @@
         <div>
             <div class="card">
                 <div class="mb-5">
-                    <span class="title">Assessor Information</span>
+                    <span class="title">Informasi Penilai (Assessor)</span>
                 </div>
                 <div>
                     <table class="w-full">
@@ -57,12 +57,12 @@
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->assessor_nik}}</td>
                             </tr>
                             <tr class="bg-white">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Name</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Nama</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->assessor_name}}</td>
                             </tr>
                             <tr class="bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Position</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Posisi</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->assessor_position}}</td>
                             </tr>
@@ -84,18 +84,18 @@
         <div>
             <div class="card">
                 <div class="mb-5">
-                    <span class="title">Assessment Information</span>
+                    <span class="title">Periode Penilaian</span>
                 </div>
                 <div>
                     <table class="w-full">
                         <tbody>
                             <tr class="bg-gray-50">
-                                <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Name</td>
+                                <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Nama</td>
                                 <td>:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->employee_assessment->name}}</td>
                             </tr>
                             <tr class="bg-white">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Date</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Tanggal</td>
                                 <td>:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->assessment_date}}</td>
                             </tr>
@@ -129,23 +129,23 @@
         <div>
             <div class="card">
                 <div class="mb-5">
-                    <span class="title">Score Detail</span>
+                    <span class="title">Skor Penilaian</span>
                 </div>
                 <div>
                     <table class="w-full">
                         <tbody>
                             <tr class="bg-gray-50">
-                                <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Score</td>
+                                <td style="width: 100px;" class="px-6 py-4 text-sm font-medium text-gray-900">Skor</td>
                                 <td>:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed->score}}</td>
                             </tr>
                             <tr class="bg-white">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Criteria</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Kriteria</td>
                                 <td>:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed['criteria']}}</td>
                             </tr>
                             <tr class="bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Description</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">Deskripsi</td>
                                 <td class="">:</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{$employee_assessed['description']}}</td>
                             </tr>
@@ -167,7 +167,7 @@
     </div>
     <div class="card">
         <div class="mb-5">
-            <span class="title">Assessment Result</span>
+            <span class="title">Hasil Penilaian</span>
         </div>
         <div class="overflow-x-auto w-full">
             <table class="bordered-table">
@@ -175,27 +175,27 @@
                     <tr>
                         <th style="width: 15%">
                             <div class="text-center">
-                                Aspect
+                                Aspek
                             </div>
                         </th>
                         <th style="width: 75%">
                             <div>
-                                Question
+                                Pernyataan
                             </div>
                         </th>
                         <th style="width: 5%">
                             <div class="text-center">
-                                Option
+                                Nilai
                             </div>
                         </th>
                         <th style="width: 5%">
                             <div class="text-center">
-                                Weight
+                                Bobot
                             </div>
                         </th>
                         <th style="width: 5%">
                             <div class="text-center">
-                                Score
+                                Skor
                             </div>
                         </th>
                     </tr>
@@ -204,7 +204,7 @@
                     @foreach ($employee_assessed_response as $key => $response)
                         <tr>
                             <td>
-                                <div class="text-center">
+                                <div>
                                     {{$response->aspect}}
                                 </div>
                             </td>
@@ -252,13 +252,37 @@
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            Deskripsi Pekerjaan
+                        </td>
+                        <td colspan="4">
+                            {{$employee_assessed->job_description}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Komentar Penilai
+                        </td>
+                        <td colspan="4">
+                            {{$employee_assessed->assessor_comments}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Komentar Penyetuju
+                        </td>
+                        <td colspan="4">
+                            {{$employee_assessed->approver_comments}}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
     <div class="card">
         <div class="mb-5">
-            <span class="title">Score Detail</span>
+            <span class="title">Deskripsi Skor</span>
         </div>
         <div class="overflow-x-auto w-full">
             <table class="bordered-table">
@@ -271,10 +295,10 @@
                         </th>
                         <th>
                             <div class="text-center">
-                                Criteria
+                                Kriteria
                             </div>
                         </th>
-                        <th>Description</th>
+                        <th>Deskripsi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -303,7 +327,7 @@
     </div>
     <div>
         <x-filament::button color="gray" wire:click="back">
-            Back
+            Kembali
         </x-filament::button>
     </div>
     @endif

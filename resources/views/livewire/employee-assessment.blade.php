@@ -29,13 +29,43 @@
             <div wire:click.away="closeModal()" class="bg-white p-6 rounded shadow-lg lg:w-1/3">
                 <h2 class="text-xl font-bold mb-4">Selesai Sesi Penilaian</h2>
                 <div class="mb-4">
-                    Konfirmasi: Anda akan menyelesaikan sesi pemilaian ini. Apakah Anda yakin?
+                    Konfirmasi: Anda akan menyelesaikan sesi penilaian ini. Apakah Anda yakin? Silahkan isi beberapa keterangan berikut.
                 </div>
-                <div>                        
+                <div>
+                    @if ($status != 'approver_reassess')
+                        <div>
+                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Deskripsi Pekerjaan</label>
+                            <textarea wire:model="job_description" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            @error('job_description') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Komentar Penilai</label>
+                            <textarea wire:model="assessor_comments" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"></textarea> 
+                            @error('assessor_comments') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+                    @else
+                        <div>
+                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Deskripsi Pekerjaan</label>
+                            <div>
+                                {{$employee_assessed->job_description != "" ? $employee_assessed->job_description : "-"}}
+                            </div>
+                        </div>
+                        <div>
+                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Komentar Penilai</label>
+                            <div>
+                                {{$employee_assessed->assessor_comments != "" ? $employee_assessed->assessor_comments : "-"}}
+                            </div>
+                        </div>
+                        <div>
+                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Komentar Penyetuju</label>
+                            <textarea wire:model="approver_comments" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                            @error('approver_comments') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror  
+                        </div>
+                    @endif
                 </div>
                 <div class="flex justify-end gap-1">
                     <button wire:click="closeModal()" class="bg-white text-gray-500 border border-gray-400 px-4 py-2 rounded mt-4">Tutup</button>
-                    <button wire:click="finishTest()" class="bg-green-500 text-white px-4 py-2 rounded mt-4">Selesai Tes</button>
+                    <button wire:click="finishTest()" class="bg-green-500 text-white px-4 py-2 rounded mt-4">Selesai Penilaian</button>
                 </div>
             </div>
         </div>
@@ -102,7 +132,7 @@
                 </div>
                 <div class="w-full mt-3">
                     <button wire:click="openModal()" type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full">
-                        SELESAI TES</button>
+                        SELESAI PENILAIAN</button>
                 </div>
             </div>
         </div>

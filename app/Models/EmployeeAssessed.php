@@ -43,7 +43,11 @@ class EmployeeAssessed extends Model
         
         'score',
         'criteria',
-        'description'
+        'description',
+
+        'job_description',
+        'assessor_comments',
+        'approver_comments'
     ];
 
     public function getIdEncrypted(){

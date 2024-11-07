@@ -29,13 +29,13 @@
             <div wire:click.away="closeModal()" class="bg-white p-6 rounded shadow-lg lg:w-1/3">
                 <h2 class="text-xl font-bold mb-4">Selesai Sesi Penilaian</h2>
                 <div class="mb-4">
-                    Konfirmasi: Anda akan menyelesaikan sesi pemilaian ini. Apakah Anda yakin?
+                    Konfirmasi: Anda akan menyelesaikan sesi penilaian ini. Apakah Anda yakin?
                 </div>
                 <div>                        
                 </div>
                 <div class="flex justify-end gap-1">
                     <button wire:click="closeModal()" class="bg-white text-gray-500 border border-gray-400 px-4 py-2 rounded mt-4">Tutup</button>
-                    <button wire:click="finishTest()" class="bg-green-500 text-white px-4 py-2 rounded mt-4">Selesai Tes</button>
+                    <button wire:click="finishTest()" class="bg-green-500 text-white px-4 py-2 rounded mt-4">Selesai Penilaian</button>
                 </div>
             </div>
         </div>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="w-full mt-3">
                     <button wire:click="openModal()" type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full">
-                        SELESAI TES</button>
+                        SELESAI PENILAIAN</button>
                 </div>
             </div>
         </div>

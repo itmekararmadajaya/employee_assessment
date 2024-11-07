@@ -18,6 +18,8 @@ class AssessmentDetail extends Page
 
     protected static string $view = 'filament.pages.assessment-detail';
 
+    protected static ?string $title = "Detail Penilaian";
+
     public $user, $employee_assessed, $employee_assessed_response, $employee_assessed_response_summary, $score_description;
 
     public $showModalReassess = false;

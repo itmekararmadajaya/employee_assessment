@@ -12,6 +12,8 @@ class ListAssessment extends Page
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.list-assessment';
+    
+    protected static ?string $title = 'Periode Penilaian';
 
     public $employee_assessments = [];
 

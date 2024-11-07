@@ -35,6 +35,12 @@
                     <x-filament::button wire:click="openNewUserModal" color="success" wire:click="exportExcel">
                         Export Excel
                     </x-filament::button>
+
+                    <a href="{{route('filament.admin.pages.assessment-monitoring', ['assessment' => $assessment->slug])}}">
+                        <x-filament::button color="danger">
+                            Dashboard Monitoring
+                        </x-filament::button>
+                    </a>
                 </div>
             </div>
         </div>

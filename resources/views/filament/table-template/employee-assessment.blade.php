@@ -1,8 +1,8 @@
-{{-- Kolom tabel untuk Employee Assessed Data --}}
+{{-- Kolom tabel untuk Employee Assessed Data (Yang Sudah Dinilai) --}}
 <div class="w-full">
     <table class="bordered-table" style="font-size: 14px;">
         <tr>
-            <td style="width: 50px;">Name</td>
+            <td style="width: 50px;">Nama</td>
             <td>{{$getRecord()->employee_name}}</td>
         </tr>
         <tr>
@@ -11,6 +11,10 @@
         </tr>
         <tr>
             <td>Nilai</td>
+            <td>{{$getRecord()->score}}</td>
+        </tr>
+        <tr>
+            <td>Kriteria</td>
             <td>{{$getRecord()->criteria}}</td>
         </tr>
         <tr>
@@ -49,18 +53,28 @@
             </a>
         @else
             <div class="flex gap-1">
+                @if ($getRecord()->status != 'approved')
                 <div class="w-1/2">
-                    <a href="">
+                    <a href="{{route('filament.admin.pages.assessment-approve-detail', ['employee-assessed' => Crypt::encrypt($getRecord()->id)])}}">
                         <x-filament::button size="md" style="width: 100%;">
                             Detail
                         </x-filament::button>
                     </a>
                 </div>
-                <div class="w-1/2">
-                    <x-filament::button size="md" style="width: 100%;" color="success" wire:click="approveConfirmation({{$getRecord()->id}})">
-                        Approve
-                    </x-filament::button>
+                    <div class="w-1/2">
+                        <x-filament::button size="md" style="width: 100%;" color="success" wire:click="approveConfirmation({{$getRecord()->id}})">
+                            Approve
+                        </x-filament::button>
+                    </div>
+                @else
+                <div class="w-full">
+                    <a href="{{route('filament.admin.pages.assessment-approve-detail', ['employee-assessed' => Crypt::encrypt($getRecord()->id)])}}">
+                        <x-filament::button size="md" style="width: 100%;">
+                            Detail
+                        </x-filament::button>
+                    </a>
                 </div>
+                @endif
             </div>
         @endif
     </div>

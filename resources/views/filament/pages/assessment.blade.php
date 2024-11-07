@@ -1,9 +1,12 @@
 <x-filament-panels::page>
+    <div>
+        <span class="fi-header-heading text-2xl font-bold tracking-tight text-gray-950 dark:text-white sm:text-3xl">Halaman Penilaian {{$page_title}}</span>
+    </div>
     <div class="grid-2">
             <div>
                 <div class="card" style="background-color: #DCFCE7;" x-data="{ blinking: true }" x-init="blinking = true" :class="blinking ? 'animate-pulse' : ''">
                     <div>
-                        <span class="title">Approval Information</span>
+                        <span class="title">Informasi Penyetujuan Penilaian</span>
                     </div>
                     <div>
                         Ada {{$count_must_be_approve}} karyawan yang penilaiannya perlu anda approve/setujui. SIlahkan menuju ke halaman <strong><a href="{{route('filament.admin.pages.assessment-approve', ['assessment' => $assessment->slug])}}" class="text-blue-500">Approve</a></strong>
@@ -13,7 +16,7 @@
         <div>
             <div class="card">
                 <div class="mb-3">
-                    <span class="title">Assessment Data</span>
+                    <span class="title">Informasi Status Penilaian</span>
                 </div>
                 <div class="mb-3 overflow-y-auto">
                     <table class="border border-gray-300">
@@ -124,7 +127,7 @@
     </div>
     <div class="card">
         <div class="mb-3">
-            <section class="title">Employee Assessment Status {{$status == '' ? 'not_assessed' : $status}}</section>
+            <section class="title">Daftar Penilaian Karyawan Status {{$status == '' ? 'not_assessed' : $status}}</section>
         </div>
         <div>
             {{$this->table}}
@@ -133,7 +136,7 @@
     </div>
     <div>
         <x-filament::button color="gray" wire:click="back">
-            Back
+            Kembali
         </x-filament::button>
     </div>
 </x-filament-panels::page>
