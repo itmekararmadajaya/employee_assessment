@@ -171,8 +171,8 @@ class EmployeeAssessmentResult extends Page implements HasTable
                     Employee::query()
                         ->leftJoin('employee_assesseds', function ($join) use ($employee_assessment_id) {
                             $join->on('employees.id', '=', 'employee_assesseds.employee_id')
-                                ->where('employee_assesseds.employee_assessment_id', $employee_assessment_id)
-                                ->where('employee_assesseds.status', 'not_assessed');
+                                ->where('employee_assesseds.employee_assessment_id', $employee_assessment_id);
+                                // ->where('employee_assesseds.status', 'not_assessed');
                         })
                         ->select(
                             'employees.*',
@@ -200,7 +200,10 @@ class EmployeeAssessmentResult extends Page implements HasTable
                             DB::raw('COALESCE(employee_assesseds.approver_departement, "") as approver_departement'),
                             DB::raw('COALESCE(employee_assesseds.rejected_msg, "") as rejected_msg'),
                             DB::raw('COALESCE(employee_assesseds.score, "") as score'),
-                        )
+                        )->where(function ($query) {
+                            $query->where('employee_assesseds.status', 'not_assessed')
+                                ->orWhereNull('employee_assesseds.status');
+                        })
                 )
                 ->columns([
                     Split::make([

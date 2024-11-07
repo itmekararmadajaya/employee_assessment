@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Models\EmployeeAssessed;
 use App\Models\EmployeeAssessment;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AssessmentMonitoring extends Page
@@ -23,6 +24,11 @@ class AssessmentMonitoring extends Page
     }
 
     public function mount(){
+        $user = Auth::user();
+        if (!$user && !$user->hasRole('admin', 'superadmin')) {
+            abort(403, 'Not Authorized');
+        }
+
         $assessment_slug = request('assessment');
         if($assessment_slug == ""){
             abort(403, 'Page Not Found');

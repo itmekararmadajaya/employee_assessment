@@ -32,7 +32,7 @@ class AssessmentDetail extends Page
     public function mount()
     {
         $user = Auth::user();
-        if (!$user && !$user->hasRole('assessor')) {
+        if (!$user && !$user->hasRole(['assessor', 'admin', 'superadmin'])) {
             abort(403, 'Not Authorized');
         }
 
@@ -64,7 +64,11 @@ class AssessmentDetail extends Page
             $this->employee_assessed->status = 'on_progress';
             $this->employee_assessed->save();
             
-            return redirect()->route('employee-assessment', $this->employee_assessed->getIdEncrypted());
+            if($user->hasRole('assessor')){
+                return redirect()->route('employee-assessment', $this->employee_assessed->getIdEncrypted());
+            }elseif($user->hasRole(['admin', 'superadmin'])){
+                return redirect()->route('employee-assessment-by-admin', $this->employee_assessed->getIdEncrypted());
+            }
         }
 
         $this->employee_assessed_response = EmployeeAssessedResponseText::where('employee_assessed_id', $this->employee_assessed->id)->get();

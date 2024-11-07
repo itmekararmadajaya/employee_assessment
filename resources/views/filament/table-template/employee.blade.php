@@ -27,6 +27,12 @@
                     Nilai
                 </x-filament::button>
             </a>
+        @elseif(auth()->user()->hasRole(['admin', 'superadmin']))
+            <a href="{{route('filament.admin.pages.assessment-detail', ['assessment' => $this->assessment->slug, 'employee' => Crypt::encrypt($getRecord()->id)])}}">
+                <x-filament::button size="md" style="width: 100%;">
+                    Nilai
+                </x-filament::button>
+            </a>
         @endif
     </div>
 </div>

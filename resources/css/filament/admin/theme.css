@@ -83,5 +83,11 @@ table {
 .bg-yellow-400 {
   background-color: #facc15; /* Equivalent to Tailwind's bg-yellow-400 */
 }
-
 /* Background Color */
+
+/* Filament Form Styling */
+.fi-fo-field-wrp-error-message {
+  color: red;
+  font-size: small;
+} 
+/* Filament Form Styling */

@@ -160,6 +160,11 @@
                         <x-filament::button color="success" wire:click="download">
                             Download
                         </x-filament::button>
+                        <a href="{{route('employee-assessment-by-admin', $employee_assessed->getIdEncrypted())}}">
+                            <x-filament::button color="warning">
+                                Perbarui Nilai
+                            </x-filament::button>
+                        </a>
                     </div>
                 </div>
             </div>

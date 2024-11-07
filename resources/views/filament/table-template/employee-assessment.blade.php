@@ -37,6 +37,10 @@
                     @endif
             </td>
         </tr>
+        <tr>
+            <td>Sumber</td>
+            <td>{{$getRecord()->source}}</td>
+        </tr>
     </table>
     <div class="mt-2">
         @if ($this->page == 'Assessment')

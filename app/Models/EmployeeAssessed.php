@@ -47,7 +47,9 @@ class EmployeeAssessed extends Model
 
         'job_description',
         'assessor_comments',
-        'approver_comments'
+        'approver_comments',
+
+        'scource', // Sumber data apakah dari web atau dari google form
     ];
 
     public function getIdEncrypted(){
