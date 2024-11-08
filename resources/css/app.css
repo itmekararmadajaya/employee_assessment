@@ -13,3 +13,7 @@
 .fi-fo-field-wrp-label {
     @apply block mb-1 text-sm font-medium text-gray-900;
 }
+
+.manual-grid-3{
+    @apply lg:grid grid-cols-3 gap-3;
+}

@@ -25,13 +25,13 @@
     {{-- Error Notification --}}
     {{-- Modal --}}
     <div x-data="{ showModal: @entangle('showModal') }">
-        <div x-show="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 max-h-screen overflow-y-auto" x-cloak>
+        <div x-show="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto" x-cloak>
             <div wire:click.away="closeModal()" class="bg-white p-6 rounded shadow-lg lg:w-3/5">
                 <h2 class="text-xl font-bold mb-4">Selesai Sesi Penilaian</h2>
                 <div class="mb-4">
                     Konfirmasi: Anda akan menyelesaikan sesi penilaian ini. Apakah Anda yakin? Silahkan isi beberapa keterangan berikut.
                 </div>
-                <div class="grid grid-cols-3 gap-3">
+                <div class="manual-grid-3">
                     <div>
                         <div>
                             <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Deskripsi Pekerjaan<sup>*</sup></label>
