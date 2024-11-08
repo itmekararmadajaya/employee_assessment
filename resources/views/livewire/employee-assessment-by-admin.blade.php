@@ -31,7 +31,9 @@
                 <div class="mb-4">
                     Konfirmasi: Anda akan menyelesaikan sesi penilaian ini. Apakah Anda yakin? Silahkan isi beberapa keterangan berikut.
                 </div>
-                <div class="manual-grid-3">
+                <div class="manual-grid-3" style="display: grid;
+                                                grid-template-columns: repeat(3, 1fr);
+                                                gap: 3rem;">
                     <div>
                         <div>
                             <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Deskripsi Pekerjaan<sup>*</sup></label>
