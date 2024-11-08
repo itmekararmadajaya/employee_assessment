@@ -15,5 +15,7 @@
 }
 
 .manual-grid-3{
-    @apply lg:grid grid-cols-3 gap-3;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
 }
