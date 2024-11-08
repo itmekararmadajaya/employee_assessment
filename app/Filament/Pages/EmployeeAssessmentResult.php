@@ -110,17 +110,9 @@ class EmployeeAssessmentResult extends Page implements HasTable
     {
         $employee_assessment_id = $this->assessment->id;
         $status = $this->status;
-
+        
         if ($status != null && $status != 'not_assessed') {
             $table_data = $table->query(EmployeeAssessed::query()->where('employee_assessment_id', $employee_assessment_id)->where('status', $status))
-                // ->recordClasses(fn(EmployeeAssessed $record) => match ($record->status) {
-                //     'not_assessed' => 'bg-white',
-                //     'on_progress' => 'bg-blue-100',
-                //     'done' => 'bg-yellow-100',
-                //     'rejected' => 'bg-red-100',
-                //     'approved' => 'bg-green-100',
-                //     default => 'bg-gray-50'
-                // })
                 ->columns([
                     Split::make([
                         Stack::make([
@@ -132,9 +124,11 @@ class EmployeeAssessmentResult extends Page implements HasTable
                         ->form([
                             TextInput::make('name')
                         ])
-                        ->query(function (Builder $query, array $data): Builder {
-                            return $query->where('employee_name', 'like', '%'.$data['name'].'%');
-                        }),
+                        ->query(function (Builder $query, array $data) use($status) {
+                            if($status != "on_progress"){
+                                return $query->where('employee_name', 'like', '%'.$data['name'].'%');
+                            }
+                        })->hidden($status == "on_progress"),
                     SelectFilter::make('employee_section')
                         ->options(Section::get()->pluck('name', 'name'))
                         ->multiple()

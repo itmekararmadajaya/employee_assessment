@@ -31,7 +31,7 @@
                 <div class="mb-4">
                     Konfirmasi: Anda akan menyelesaikan sesi penilaian ini. Apakah Anda yakin? Silahkan isi beberapa keterangan berikut.
                 </div>
-                <div class="lg:grid lg:grid-cols-3 lg:gap-3">
+                <div class="grid grid-cols-3 gap-3">
                     <div>
                         <div>
                             <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Deskripsi Pekerjaan<sup>*</sup></label>

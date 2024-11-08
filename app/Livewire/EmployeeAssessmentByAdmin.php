@@ -283,14 +283,21 @@ class EmployeeAssessmentByAdmin extends Component implements HasForms
                 if(!empty($get_approver)){
                     $this->employee_assessed->approved_by = $get_approver->id;
 
-                    $this->employee_assessed->approved_at = $this->approved_at;
                     $this->employee_assessed->approver_nik = $get_approver->nik;
                     $this->employee_assessed->approver_name = $get_approver->name;
                     $this->employee_assessed->approver_position = $get_approver->position;
                     $this->employee_assessed->approver_section = $get_approver->section->name;
                     $this->employee_assessed->approver_departement = $get_approver->section->departement->name;
-                }
+                }else{
+                    $this->employee_assessed->approved_by = $get_assessor->id;
 
+                    $this->employee_assessed->approver_nik = $get_assessor->nik;
+                    $this->employee_assessed->approver_name = $get_assessor->name;
+                    $this->employee_assessed->approver_position = $get_assessor->position;
+                    $this->employee_assessed->approver_section = $get_assessor->section->name;
+                    $this->employee_assessed->approver_departement = $get_assessor->section->departement->name;
+                }
+                $this->employee_assessed->approved_at = $this->approved_at != null ? $this->approved_at : Carbon::now()->format('Y-m-d H:i:s');
                 $this->employee_assessed->status = 'approved';
 
                 /**

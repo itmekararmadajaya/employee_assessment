@@ -52,7 +52,7 @@ class EmployeeAssessmentResultDetail extends Page
         abort_if(!$this->employee_assessed, 403, 'Employee not found');
 
         if ($this->employee_assessed->status == 'not_assessed' || $this->employee_assessed->status == 'on_progress') {
-            abort(403, 'Employee not assessed');
+            return redirect()->route('employee-assessment-by-admin', ['employee_assessed' => $employeeAsessedId]);
         }
 
         $this->employee_assessed_response = EmployeeAssessedResponseText::where('employee_assessed_id', $this->employee_assessed->id)->get();

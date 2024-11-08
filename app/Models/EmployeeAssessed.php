@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -54,6 +55,14 @@ class EmployeeAssessed extends Model
 
     public function getIdEncrypted(){
         return Crypt::encrypt($this->id);
+    }
+
+    public function getAssessmentDate(){
+        return Carbon::make($this->assessment_date)->format('d-m-Y H:i');
+    }
+
+    public function getApprovedAt(){
+        return Carbon::make($this->approved_at)->format('d-m-Y H:i');
     }
 
     public function employee_assessment(): BelongsTo {

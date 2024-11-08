@@ -9,6 +9,9 @@
         @vite(['resources/css/app.css','resources/js/app.js'])
     </head>
     <body>
+        <div class="lg:grid lg:grid-cols-3 lg:gap-3">
+
+        </div>
         {{ $slot }}
     </body>
 </html>

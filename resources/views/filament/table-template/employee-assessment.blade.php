@@ -3,11 +3,11 @@
     <table class="bordered-table" style="font-size: 14px;">
         <tr>
             <td style="width: 50px;">Nama</td>
-            <td>{{$getRecord()->employee_name}}</td>
+            <td>{{$getRecord()->employee_name == null ? $getRecord()->employee->name : $getRecord()->employee_name}}</td>
         </tr>
         <tr>
             <td>NIK</td>
-            <td>{{$getRecord()->employee_nik}}</td>
+            <td>{{$getRecord()->employee_nik == null ? $getRecord()->employee->nik : $getRecord()->employee_nik}}</td>
         </tr>
         <tr>
             <td>Nilai</td>
@@ -19,7 +19,7 @@
         </tr>
         <tr>
             <td>Section</td>
-            <td>{{$getRecord()->employee_section}}</td>
+            <td>{{$getRecord()->employee_section == null ? $getRecord()->employee->section->name : $getRecord()->employee_section}}</td>
         </tr>
         <tr>
             <td>Status</td>
