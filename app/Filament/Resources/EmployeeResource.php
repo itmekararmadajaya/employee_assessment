@@ -47,6 +47,7 @@ class EmployeeResource extends Resource
                     Select::make('status')->options([
                         'KONTRAK' => 'KONTRAK',
                         'TETAP' => 'TETAP',
+                        'LEPAS' => 'LEPAS',
                     ]),
                     Forms\Components\Select::make('section_id')
                         ->relationship('section', 'name')

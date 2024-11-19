@@ -66,7 +66,7 @@ class EmployeeImport implements ToModel, WithHeadingRow, WithValidation
         return [
             'nik' => 'required|string',
             'name' => 'required|string',
-            'status' => 'required|string|in:TETAP,KONTRAK',
+            'status' => 'required|string|in:TETAP,KONTRAK,LEPAS',
             'position' => 'required|string|exists:positions,name',
             'section' => 'required|string|exists:sections,name',
             'departement' => 'required|string|exists:departements,name',

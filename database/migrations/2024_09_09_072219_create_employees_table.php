@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nik')->unique();
             $table->string('name');
             $table->string('position');
-            $table->enum('status', ['KONTRAK', 'TETAP']);
+            $table->enum('status', ['KONTRAK', 'TETAP', 'LEPAS']);
             $table->foreignId('section_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
