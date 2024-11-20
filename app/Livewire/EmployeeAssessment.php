@@ -276,7 +276,7 @@ class EmployeeAssessment extends Component
                 /**
                  * Untuk assessor dan approver nik sama
                  */
-                dd($this->assessor_data['approver']);
+                dd($this->assessor_data);
                 if(in_array($this->user->employee->nik, explode(',', $this->assessor_data['approver'])) == true){
                     $this->employee_assessed->approved_by = $this->user->employee->id;
                     $this->employee_assessed->approved_at = Carbon::now()->format('Y-m-d H:i:s');
