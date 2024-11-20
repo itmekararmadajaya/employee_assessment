@@ -318,7 +318,7 @@ class EmployeeAssessment extends Component
                 }
             } catch (\Exception $e) {
                 Log::error('Error calculating score: ' . $e->getMessage());
-                
+                dd($e);
                 $this->showModal = false;
 
                 $this->toast_error = true;
