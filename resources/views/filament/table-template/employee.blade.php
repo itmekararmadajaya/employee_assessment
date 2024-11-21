@@ -14,6 +14,10 @@
             <td>{{$getRecord()->section->name}}</td>
         </tr>
         <tr>
+            <td>Position</td>
+            <td>{{$getRecord()->position}}</td>
+        </tr>
+        <tr>
             <td>Status</td>
             <td>
                 <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded">not_assessed</span>

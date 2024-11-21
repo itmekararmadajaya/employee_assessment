@@ -41,6 +41,12 @@
                             Dashboard Monitoring
                         </x-filament::button>
                     </a>
+
+                    <a href="{{route('filament.admin.pages.assessor-user-controlling', ['assessment' => $assessment->slug])}}">
+                        <x-filament::button color="info">
+                            Assessorr Controlling
+                        </x-filament::button>
+                    </a>
                 </div>
             </div>
         </div>

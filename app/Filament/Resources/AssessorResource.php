@@ -11,9 +11,13 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -104,9 +108,36 @@ class AssessorResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                Filter::make('assessor')
+                    ->form([
+                        TextInput::make('assessor')
+                    ])
+                    ->query(function(Builder $query, array $data){
+                        if($data['assessor'] != null){
+                            $query->whereIn('assessor', [$data['assessor']]);
+                        }
+                    }),
+                Filter::make('assessed')
+                    ->form([
+                        Select::make('assessed')->options(Position::get()->pluck('name', 'name'))
+                    ])
+                    ->query(function(Builder $query, array $data){
+                        if($data['assessed'] != null){
+                            $query->where('assessed', 'LIKE', '%'. $data['assessed'] .'%');
+                        }
+                    }),
+                Filter::make('approver')
+                    ->form([
+                        TextInput::make('approver')
+                    ])
+                    ->query(function(Builder $query, array $data){
+                        if($data['approver'] != null){
+                            $query->whereIn('approver', [$data['approver']]);
+                        }
+                    }),
                 SelectFilter::make('section')->relationship('section', 'name'),
                 SelectFilter::make('departement')->relationship('section.departement', 'name')
-            ])
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

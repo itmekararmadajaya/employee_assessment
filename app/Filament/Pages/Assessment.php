@@ -89,9 +89,16 @@ class Assessment extends Page implements HasTable, HasForms
          * Count assessment data
          */
         $assessment_id = $this->assessment->id;
+        $assessor_nik = $this->user->employee->nik;
         $get_assessment_data = Employee::with(['assessments' => function ($query) use ($assessment_id) {
             return $query->where('employee_assessment_id', $assessment_id);
-        }])->whereIn('section_id', $this->section_id)->whereIn('position', $this->position)->get();
+        }])
+        ->join('assessors', function($join) use($assessor_nik){
+            $join->on('employees.section_id', '=','assessors.section_id')
+                ->whereIn('assessors.assessor', [$assessor_nik]);
+        })
+        ->whereRaw('assessors.assessed LIKE CONCAT("%", employees.position ,"%")')
+        ->get();
 
         $count_blank = $get_assessment_data->filter(function ($employee) {
             return $employee->assessments->isEmpty();
@@ -137,7 +144,8 @@ class Assessment extends Page implements HasTable, HasForms
     {
         $assessment_id = $this->assessment->id;
         $status = $this->status;
-
+        $assessor_nik = $this->user->employee->nik;
+        
         if ($status != null && $status != 'not_assessed') {
             $table_data = $table->query(EmployeeAssessed::query()->where('employee_assessment_id', $this->assessment->id)->where('assessor_id', $this->user->employee->id)->where('status', $status))                
                 ->columns([
@@ -184,8 +192,11 @@ class Assessment extends Page implements HasTable, HasForms
                             $join->on('employees.id', '=', 'employee_assesseds.employee_id')
                                 ->where('employee_assesseds.employee_assessment_id', $assessment_id);
                         })
-                        ->whereIn('section_id', $this->section_id)
-                        ->whereIn('position', $this->position)
+                        ->join('assessors', function($join) use($assessor_nik){
+                            $join->on('employees.section_id', '=','assessors.section_id')
+                                ->whereIn('assessors.assessor', [$assessor_nik]);
+                        })
+                        ->whereRaw('assessors.assessed LIKE CONCAT("%", employees.position ,"%")')
                         ->select(
                             'employees.*',
                             DB::raw('COALESCE(employee_assesseds.employee_assessment_id, "") as employee_assessment_id'),
@@ -212,6 +223,7 @@ class Assessment extends Page implements HasTable, HasForms
                             DB::raw('COALESCE(employee_assesseds.approver_departement, "") as approver_departement'),
                             DB::raw('COALESCE(employee_assesseds.rejected_msg, "") as rejected_msg'),
                             DB::raw('COALESCE(employee_assesseds.score, "") as score'),
+                            'assessors.assessed'
                         )
                         ->where(function ($query) {
                             $query->where('employee_assesseds.status', 'not_assessed')

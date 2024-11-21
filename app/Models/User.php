@@ -63,4 +63,17 @@ class User extends Authenticatable implements FilamentUser
     public function employee(): HasOne {
         return $this->hasOne(Employee::class, 'nik', 'nik');
     }
+
+
+    //Masih belum diimplementasikan dimana2
+    public function getAssessorFor(){
+        $assessor = Assessor::whereIn('assessor', [$this->nik])->get()->pluck('section.name')->toArray();
+        return $assessor;
+    }
+
+    public function getApproverFor(){
+        $approver = Assessor::whereIn('approver', [$this->nik])->get()->pluck('section.name')->toArray();
+        return $approver;
+    }
+    //Masih belum diimplementasikan dimana2
 }

@@ -22,6 +22,10 @@
             <td>{{$getRecord()->employee_section == null ? $getRecord()->employee->section->name : $getRecord()->employee_section}}</td>
         </tr>
         <tr>
+            <td>Position</td>
+            <td>{{$getRecord()->employee_position == null ? $getRecord()->employee->position : $getRecord()->employee_position}}</td>
+        </tr>
+        <tr>
             <td>Status</td>
             <td>
                     @if ($getRecord()->status == 'not_assessed')
