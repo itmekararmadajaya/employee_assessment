@@ -6,6 +6,7 @@ use App\Models\Assessor;
 use App\Models\EmployeeAssessment;
 use App\Models\User;
 use Filament\Pages\Page;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -40,10 +41,17 @@ class AssessorUserControlling extends Page implements HasTable
 
     public function table(Table $table): Table{
         return $table
-        ->query(User::role('assessor'))
-        ->columns([
-            TextColumn::make('name')
-        ])
-        ;
+            ->query(User::role('assessor'))
+            ->columns([
+                TextColumn::make('name')
+            ])
+            ->actions([
+                Action::make('detail')->url(fn(User $record): string =>
+                    route('filament.admin.pages.assessor-user-controlling-detail', [
+                        'assessment' => $this->assessment->slug,
+                        'user_id' => $record->id
+                    ])
+                )
+            ]);
     }
 }
