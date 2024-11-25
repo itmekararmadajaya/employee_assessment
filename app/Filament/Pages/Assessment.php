@@ -242,8 +242,10 @@ class Assessment extends Page implements HasTable, HasForms
                         ->form([
                             TextInput::make('name')
                         ])
-                        ->query(function (Builder $query, array $data): Builder {
-                            return $query->where('name', 'like', '%'.$data['name'].'%');
+                        ->query(function (Builder $query, array $data){
+                            if($data['name'] != ""){
+                                return $query->where('name', 'like', '%'.$data['name'].'%');
+                            }
                         }),
                     SelectFilter::make('section')
                         ->relationship('section', 'name')

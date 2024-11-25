@@ -114,7 +114,9 @@ class AssessorUserControllingDetail extends Page implements HasTable
                             TextInput::make('name')
                         ])
                         ->query(function (Builder $query, array $data): Builder {
-                            return $query->where('name', 'like', '%'.$data['name'].'%');
+                            if($data['name'] != ""){
+                                return $query->where('name', 'like', '%'.$data['name'].'%');
+                            }
                         }),
                     SelectFilter::make('section')
                         ->relationship('section', 'name')
