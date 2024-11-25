@@ -244,26 +244,26 @@ class Assessment extends Page implements HasTable, HasForms
                     ])
                 ])
                 ->filters([
-                    // Filter::make('employee_name')
-                    //     ->form([
-                    //         TextInput::make('name')
-                    //     ])
-                    //     ->query(function (Builder $query, array $data){
-                    //         if($data['name'] != ""){
-                    //             return $query->where('name', 'like', '%'.$data['name'].'%');
-                    //         }
-                    //     }),
-                    // SelectFilter::make('section')
-                    //     ->relationship('section', 'name')
-                    //     ->multiple()
-                    //     ->searchable()
-                    //     ->preload(),
-                    // SelectFilter::make('departement')
-                    //     ->relationship('section.departement', 'name')
-                    //     ->multiple()
-                    //     ->searchable()
-                    //     ->preload(),
-                    // SelectFilter::make('position')->options(Position::get()->pluck('name', 'name'))->multiple()
+                    Filter::make('employee_name')
+                        ->form([
+                            TextInput::make('name')
+                        ])
+                        ->query(function (Builder $query, array $data){
+                            if($data['name'] != ""){
+                                return $query->where('name', 'like', '%'.$data['name'].'%');
+                            }
+                        }),
+                    SelectFilter::make('section')
+                        ->relationship('section', 'name')
+                        ->multiple()
+                        ->searchable()
+                        ->preload(),
+                    SelectFilter::make('departement')
+                        ->relationship('section.departement', 'name')
+                        ->multiple()
+                        ->searchable()
+                        ->preload(),
+                    SelectFilter::make('position')->options(Position::get()->pluck('name', 'name'))->multiple()
                 ], layout: FiltersLayout::AboveContent)
                 ->actions([
                 ], position: ActionsPosition::BeforeCells)
