@@ -90,14 +90,20 @@ class Assessment extends Page implements HasTable, HasForms
          */
         $assessment_id = $this->assessment->id;
         $assessor_nik = $this->user->employee->nik;
-        $get_assessment_data = Employee::with(['assessments' => function ($query) use ($assessment_id) {
+        $get_assessment_data = Employee::
+        with(['assessments' => function ($query) use ($assessment_id) {
             return $query->where('employee_assessment_id', $assessment_id);
         }])
+        // leftJoin('employee_assesseds', function ($join) use ($assessment_id) {
+        //     $join->on('employees.id', '=', 'employee_assesseds.employee_id')
+        //         ->where('employee_assesseds.employee_assessment_id', $assessment_id);
+        // })
         ->join('assessors', function($join) use($assessor_nik){
             $join->on('employees.section_id', '=','assessors.section_id')
                 ->whereIn('assessors.assessor', [$assessor_nik]);
         })
         ->whereRaw('REPLACE(assessors.assessed, " ", "") LIKE LOWER(CONCAT("%", REPLACE(employees.position, " ", "") ,"%"))')
+        ->select('employees.*', 'assessors.assessed')
         ->get();
 
         $count_blank = $get_assessment_data->filter(function ($employee) {
