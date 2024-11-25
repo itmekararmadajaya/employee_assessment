@@ -72,7 +72,8 @@ class AssessorUserControllingDetail extends Page implements HasTable
                 $join->on('employees.section_id', '=','assessors.section_id')
                     ->whereIn('assessors.assessor', [$assessor_nik]);
             })
-            ->whereRaw('assessors.assessed LIKE CONCAT("%", employees.position ,"%")')
+            // ->whereRaw('assessors.assessed LIKE CONCAT("%", employees.position ,"%")')
+            ->whereRaw('REPLACE(assessors.assessed, " ", "") LIKE LOWER(CONCAT("%", REPLACE(employees.position, " ", "") ,"%"))')
             ->select(
                 'employees.*',
                 DB::raw('COALESCE(employee_assesseds.employee_assessment_id, "") as employee_assessment_id'),
